@@ -1,0 +1,3 @@
+# pastoche
+
+Les pâtes fastoches.
