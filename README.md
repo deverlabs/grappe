@@ -3,4 +3,4 @@
 Les pâtes fastoches.
 
 
-https://gitlab.com/BenOrcha/projet_innovation/blob/master/workshop%201%20-%20from%20idea%20to%20concept/Work%20base%20-%201.docx
+https://docs.google.com/document/d/1jUxPgFkNxVpHMq_5RAC_9_u6OyrnokUhzrpvhRS7tu8/edit?usp=sharing
