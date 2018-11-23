@@ -1,6 +1,4 @@
-# pastoche
-
-Les pâtes fastoches.
+#MODULO
 
 1er séance
 
