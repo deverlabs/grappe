@@ -1,0 +1,14 @@
+{
+       "buttons" :  [
+        {
+             "name" : "slider1",
+             "position" : "northEast",
+             "action" : ["0x12","0x26"]
+        },
+        {
+             "name" : "potar1",
+             "position" : "northWest",
+             "action" : ["0x1C","0x18"]
+        }
+    ]
+}

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Grape manager</title>
+        <meta charset="utf-8">
+    </head>
+    <body>
+        <h1>Grape manager</h1>
+        <h4 id="status">Can't connect to Grape</h4>
+        <input id="action" type="text"/>
+        <button onclick="sendMessage()">Send action</button>
+    </body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+</html>
+
+
+<script type="text/javascript">
+  $(document).ready(function() {
+
+   /* waitForConnection(function(socket) {
+        $('#status').html("Connected to grape").css({color : "green"})
+    })*/
+  })
+
+  let socket = new WebSocket('ws://127.0.0.1:1234')
+  let initialized = false;
+  let sendMessage = null;
+
+  function waitForConnection(socket) {
+
+    socket.onopen = function (evt) {
+      console.log('Opened')
+      sendMessage = function() {
+        console.log(socket)
+        socket.send($("#action").val());
+      }
+    };
+    socket.onmessage = function (evt) {
+      let response = JSON.parse(evt.data)
+      switch (response.event){
+        case 'connected' :
+          initialized = true;
+          console.log(socket)
+          $('#status').html(response.message).css({color : "green"})
+          break;
+      }
+    };
+    socket.onclose = function(evt) {
+      console.log("Connexion closed")
+      if(initialized){
+        $('#status').html("Connexion to Grape loosed").css({color : "red"})
+        socket = new WebSocket('ws://127.0.0.1:1234')
+        initialized = false;
+        return waitForConnection(socket);
+      }
+
+
+    }
+    if(socket.readyState === 3){
+      socket = new WebSocket('ws://127.0.0.1:1234')
+      return waitForConnection(socket);
+    }
+    else if(socket.readyState === 1){
+
+    }
+    else {
+      setTimeout(
+          function () {
+            return waitForConnection(socket);
+          }, 500);
+    }
+
+
+  }
+
+  waitForConnection(socket);
+
+  /*
+  */
+
+</script>
