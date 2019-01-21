@@ -2,13 +2,76 @@
        "buttons" :  [
         {
              "name" : "slider1",
+             "type" : "slider",
              "position" : "northEast",
              "action" : ["0x12","0x26"]
         },
         {
              "name" : "potar1",
+             "type": "dial",
+             "position" : "northWest",
+             "action" : ["0x1C","0x18"]
+        },
+        {
+             "name" : "button1",
+             "type" : "button",
+             "position" : "northEast",
+             "action" : ["0x12","0x26"]
+        },
+        {
+             "name" : "button2",
+              "type" : "button",
+             "position" : "northWest",
+             "action" : ["0x1C","0x18"]
+        },
+        {
+             "name" : "button1",
+             "type" : "button",
+             "position" : "northEast",
+             "action" : ["0x12","0x26"]
+        },
+        {
+             "name" : "button2",
+              "type" : "button",
+             "position" : "northWest",
+             "action" : ["0x1C","0x18"]
+        },
+        {
+             "name" : "button1",
+             "type" : "button",
+             "position" : "northEast",
+             "action" : ["0x12","0x26"]
+        },
+        {
+             "name" : "button2",
+              "type" : "button",
+             "position" : "northWest",
+             "action" : ["0x1C","0x18"]
+        },
+        {
+             "name" : "button1",
+             "type" : "button",
+             "position" : "northEast",
+             "action" : ["0x12","0x26"]
+        },
+        {
+             "name" : "button2",
+              "type" : "button",
+             "position" : "northWest",
+             "action" : ["0x1C","0x18"]
+        },
+        {
+             "name" : "button1",
+             "type" : "button",
+             "position" : "northEast",
+             "action" : ["0x12","0x26"]
+        },
+        {
+             "name" : "button2",
+              "type" : "button",
              "position" : "northWest",
              "action" : ["0x1C","0x18"]
         }
+
     ]
 }

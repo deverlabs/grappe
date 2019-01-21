@@ -7,7 +7,7 @@
 #include <QtCore/QByteArray>
 #include <QtNetwork/QSslError>
 #include <Windows.h>
-
+#include <QJsonObject>
 #if (_WIN32_WINNT >= 0x0403)
 WINUSERAPI UINT WINAPI SendInput(UINT,LPINPUT,int);
 #endif
@@ -35,7 +35,7 @@ private:
 
 signals:
     void new_connection();
-    void new_message(QString);
+    void new_message(QJsonObject);
 };
 
 

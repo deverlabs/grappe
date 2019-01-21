@@ -4,17 +4,52 @@
         <title>Grape manager</title>
         <meta charset="utf-8">
     </head>
-    <body>
+    <body style="display: grid">
         <h1>Grape manager</h1>
         <h4 id="status">Can't connect to Grape</h4>
-        <input id="action" type="text"/>
-        <button onclick="sendMessage()">Send action</button>
+        <div>
+        <label for="buttonName">Button name:</label>
+        <input style="display:block" id="buttonName" type="text"/>
+        </div>
+        <div>
+        <label for="0">Action #1</label>
+        <input class="suit" id="0" type="text"/>
+              <button onclick="emptyStep(0)">Empty</button>
+        </div>
+        <div>
+        <label for="1">Action #2</label>
+        <input class="suit" id="1" type="text"/>
+        <button onclick="emptyStep(1)">Empty</button>
+        </div>
+        <div>
+        <label for="2">Action #3</label>
+        <input class="suit" id="2" type="text"/>
+         <button onclick="emptyStep(2)">Empty</button>
+        </div>
+
+
+        <input type="submit" onclick="sendMessage()" value="Send action"/>
     </body>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 </html>
 
 
+<style>
+  input {
+    margin-bottom : 20px
+}
+</style>
 <script type="text/javascript">
+var suit = [[], [], []];
+var hex = [[], [], []];
+
+$('.suit').keyup(function(e) {
+  suit[$(this).attr('id')].push(e.key) // input
+  hex[$(this).attr('id')].push("0x"+e.keyCode.toString(16)) // storage
+  console.log(hex)
+  $(this).val(suit[$(this).attr('id')]+"")
+});
+
   $(document).ready(function() {
 
    /* waitForConnection(function(socket) {
@@ -26,13 +61,25 @@
   let initialized = false;
   let sendMessage = null;
 
+  let emptyStep = function(val) {
+         $('#'+val).val('');
+        suit[val] = [];
+        hex[val] = [];
+    }
   function waitForConnection(socket) {
 
     socket.onopen = function (evt) {
       console.log('Opened')
       sendMessage = function() {
         console.log(socket)
-        socket.send($("#action").val());
+        socket.send(
+        JSON.stringify({
+          buttonName: $("#buttonName").val(),
+          0: hex[0].toString(),
+          1: hex[1].toString(),
+          2: hex[2].toString()
+        })
+        );
       }
     };
     socket.onmessage = function (evt) {

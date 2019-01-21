@@ -6,32 +6,19 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>731</width>
+    <height>490</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Worker</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QPushButton" name="pushButton">
-    <property name="geometry">
-     <rect>
-      <x>40</x>
-      <y>70</y>
-      <width>89</width>
-      <height>27</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Create server</string>
-    </property>
-   </widget>
    <widget class="QLabel" name="status_label">
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>220</y>
+      <y>430</y>
       <width>311</width>
       <height>16</height>
      </rect>
@@ -56,19 +43,6 @@
      <number>127</number>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_2">
-    <property name="geometry">
-     <rect>
-      <x>270</x>
-      <y>170</y>
-      <width>111</width>
-      <height>51</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>PushButton</string>
-    </property>
-   </widget>
    <widget class="QSlider" name="verticalSlider">
     <property name="geometry">
      <rect>
@@ -85,14 +59,38 @@
      <enum>Qt::Vertical</enum>
     </property>
    </widget>
+   <widget class="QPushButton" name="pushButton_2">
+    <property name="geometry">
+     <rect>
+      <x>380</x>
+      <y>50</y>
+      <width>141</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>PushButton</string>
+    </property>
+   </widget>
+   <widget class="QWidget" name="gridLayoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>160</y>
+      <width>711</width>
+      <height>261</height>
+     </rect>
+    </property>
+    <layout class="QGridLayout" name="gridLayout"/>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>400</width>
-     <height>25</height>
+     <width>731</width>
+     <height>26</height>
     </rect>
    </property>
   </widget>

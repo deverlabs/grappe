@@ -69,15 +69,43 @@ void SocketServer::onNewConnection()
     pSocket->sendTextMessage(doc.toJson(QJsonDocument::Compact));
 
 }
+QJsonObject ObjectFromString(const QString& in)
+{
+    QJsonObject obj;
 
+    QJsonDocument doc = QJsonDocument::fromJson(in.toUtf8());
+
+    // check validity of the document
+    if(!doc.isNull())
+    {
+        if(doc.isObject())
+        {
+            obj = doc.object();
+        }
+        else
+        {
+            qDebug() << "Document is not an object" << endl;
+        }
+    }
+    else
+    {
+        qDebug() << "Invalid JSON...\n" << in << endl;
+    }
+
+    return obj;
+}
 void SocketServer::processTextMessage(QString message)
 {
-        emit new_message(message);
+        qInfo() << message;
+        QJsonObject doc = ObjectFromString(message);
+        qInfo() << doc;
+        emit new_message(doc);
 
 }
 
 void SocketServer::processBinaryMessage(QByteArray message)
 {
+    qInfo() << "message";
     QWebSocket *pClient = qobject_cast<QWebSocket *>(sender());
     if (pClient)
     {

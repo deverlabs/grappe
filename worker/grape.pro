@@ -57,7 +57,7 @@ include(config.json)
 
 
 LIBS += -luser32
-LIBS += C:/Users/xD3CODER/Desktop/grape/thirdparty/teVirtualMIDI64.lib
+LIBS += X:/grape/thirdparty/teVirtualMIDI64.lib
 
 DISTFILES += \
     config.json \
