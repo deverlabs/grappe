@@ -12,28 +12,32 @@ Adafruit_SSD1306 display1(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, PIN_RESET);
 String displayLabels[4] = "";
 
 void displaysSetup() {
-  Wire.begin();
-
-  if(!display0.begin(SSD1306_SWITCHCAPVCC, 0x3D)) {
-    //Serial.println(F("SSD1306 allocation failed for display 0"));
-    for(;;); // Don't proceed, loop forever
-  }
-  delay(1000);
-  if(!display1.begin(SSD1306_SWITCHCAPVCC, 0x3C)) {
-    //Serial.println(F("SSD1306 allocation failed for display 1"));
-    for(;;); // Don't proceed, loop forever
-  }
-
-  display0.setRotation(2);
-  display1.setRotation(2);
+  #if ENABLE_DISPLAYS
+    Wire.begin();
+    
+    if(!display0.begin(SSD1306_SWITCHCAPVCC, 0x3D)) {
+      //Serial.println(F("SSD1306 allocation failed for display 0"));
+      for(;;); // Don't proceed, loop forever
+    }
  
-  _printLayout();
+    if(!display1.begin(SSD1306_SWITCHCAPVCC, 0x3C)) {
+      //Serial.println(F("SSD1306 allocation failed for display 1"));
+      for(;;); // Don't proceed, loop forever
+    }
+
+    display0.setRotation(2);
+    display1.setRotation(2);
+   
+    _printLayout();
+  #endif
 }
 
 void setLabel(int component, String label) {
   displayLabels[component] = label;
 
-  _printLayout();
+  #if ENABLE_DISPLAYS
+    _printLayout();
+  #endif
 }
 
 void _printLayout() {

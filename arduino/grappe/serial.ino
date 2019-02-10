@@ -3,5 +3,17 @@ void serialSetup() {
 }
 
 void serialSendData() {
-    Serial.println("hello");
+    Serial.println(F("hello"));
+}
+
+void serialSendReadyEvent() {
+  Serial.println(F("ready-event"));
+}
+
+void serialEventAck(bool isAck) {
+  if(isAck) {
+    Serial.println(F("event-ack"));
+  } else {
+    Serial.println(F("event-nack"));
+  }
 }
