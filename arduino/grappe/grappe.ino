@@ -1,9 +1,11 @@
 
+#include "components.h"
+
 String eventString = "";         // a String to hold incoming data
 bool eventReceived = false;  // whether the string is complete
 
 #define EVENT_SET_LABEL 1
-#define ENABLE_DISPLAYS true
+#define ENABLE_DISPLAYS false
 
 void setup() {
     serialSetup();
@@ -16,6 +18,9 @@ void setup() {
     setLabel(0, F(""));
 
     serialSendReadyEvent();
+
+    
+    componentPlug(T_COMP_PUSHBTN, 0);
 }
 
 void loop() {
@@ -28,6 +33,13 @@ void loop() {
     // clear the string:
     eventString = "";
     eventReceived = false;
+  }
+
+  /** Poll Values **/
+  for(uint8_t i = 0; i < SLOTS_TOTAL; i++) {
+    if(componentPollValues(i)) {
+      serialSendChangeEvent(i, componentLastValue(i));
+    }
   }
 }
 
