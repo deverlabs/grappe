@@ -244,7 +244,7 @@ DWORD CALLBACK virtualMIDILogging( DWORD logMask );
 
 
 #ifdef __cplusplus
-    }
+}
 #endif
 
 

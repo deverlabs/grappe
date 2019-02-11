@@ -3,28 +3,28 @@
 jsonParser::jsonParser(QString path)
 {
     try {
-     QString val;
-      QFile file;
-          file.setFileName(path);
-          file.open(QIODevice::ReadOnly | QIODevice::Text);
-          val = file.readAll();
-          file.close();
+        QString val;
+        QFile file;
+        file.setFileName(path);
+        file.open(QIODevice::ReadOnly | QIODevice::Text);
+        val = file.readAll();
+        file.close();
 
-           this->file = QJsonDocument::fromJson(val.toUtf8());
+        this->file = QJsonDocument::fromJson(val.toUtf8());
 
 
 
 
     }
     catch(...) {
-          std::cout << "error";
+        std::cout << "error";
     }
 
 }
 
 QJsonObject jsonParser::getConfig() {
 
-                QJsonObject jObject = this->file.object();
-                return jObject;
+    QJsonObject jObject = this->file.object();
+    return jObject;
 
 }

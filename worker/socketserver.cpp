@@ -6,7 +6,7 @@
 #include <QtCore/QFile>
 #include <iostream>
 
- #include <QJsonObject>
+#include <QJsonObject>
 #include <QtNetwork/QSslCertificate>
 #include <QtNetwork/QSslKey>
 #include "padmanager.h"
@@ -26,14 +26,14 @@ SocketServer::SocketServer(quint16 port, QObject *parent) :
     certFile.open(QIODevice::ReadOnly);
     keyFile.open(QIODevice::ReadOnly);
     QSslCertificate certificate(&certFile, QSsl::Pem);
-       QSslKey sslKey(&keyFile, QSsl::Rsa, QSsl::Pem);
-       certFile.close();
-       keyFile.close();
-       sslConfiguration.setPeerVerifyMode(QSslSocket::VerifyNone);
-       sslConfiguration.setLocalCertificate(certificate);
-       sslConfiguration.setPrivateKey(sslKey);
-       sslConfiguration.setProtocol(QSsl::TlsV1SslV3);
-      // m_pWebSocketServer->setSslConfiguration(sslConfiguration);
+    QSslKey sslKey(&keyFile, QSsl::Rsa, QSsl::Pem);
+    certFile.close();
+    keyFile.close();
+    sslConfiguration.setPeerVerifyMode(QSslSocket::VerifyNone);
+    sslConfiguration.setLocalCertificate(certificate);
+    sslConfiguration.setPrivateKey(sslKey);
+    sslConfiguration.setProtocol(QSsl::TlsV1SslV3);
+    // m_pWebSocketServer->setSslConfiguration(sslConfiguration);
 
     if (m_pWebSocketServer->listen(QHostAddress::Any, port))
     {
@@ -96,16 +96,14 @@ QJsonObject ObjectFromString(const QString& in)
 }
 void SocketServer::processTextMessage(QString message)
 {
-        qInfo() << message;
-        QJsonObject doc = ObjectFromString(message);
-        qInfo() << doc;
-        emit new_message(doc);
+    QJsonObject doc = ObjectFromString(message);
+    qInfo() << doc;
+    emit new_message(doc);
 
 }
 
 void SocketServer::processBinaryMessage(QByteArray message)
 {
-    qInfo() << "message";
     QWebSocket *pClient = qobject_cast<QWebSocket *>(sender());
     if (pClient)
     {

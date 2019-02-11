@@ -11,13 +11,13 @@ void midiManager::connectDriver()
     qDebug() << "Available interfaces: ";
     for(auto e : vals.keys())
     {
-         qDebug() << vals.value(e);
+        qDebug() << vals.value(e);
         if(vals.value(e) == DRIVER_NAME){
-              qDebug() << "Driver found !";
-               this->midi.connect(QString::number(i));
-              break;
+            qDebug() << "Driver found !";
+            this->midi.connect(QString::number(i));
+            break;
         }
         i++;
-    //  cout << e.toStdString() << "-> " << vals.value(e).toStdString() << endl;
+        //  cout << e.toStdString() << "-> " << vals.value(e).toStdString() << endl;
     }
 }

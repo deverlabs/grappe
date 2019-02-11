@@ -75,9 +75,19 @@ $('.suit').keyup(function(e) {
         socket.send(
         JSON.stringify({
           buttonName: $("#buttonName").val(),
-          0: hex[0].toString(),
-          1: hex[1].toString(),
-          2: hex[2].toString()
+          keys : [
+                 {  type : "suit",
+                     keys : hex[0].toString()
+                 },
+                 {  type : "suit",
+                           keys :  hex[1].toString(),
+                           },
+                           {  type : "text",
+                                     keys : hex[2].toString()
+                                     }
+
+          ]
+
         })
         );
       }

@@ -9,7 +9,7 @@ class midiManager
 public:
     midiManager();
     void connectDriver();
-    QString DRIVER_NAME = "Grappe";
+    QString DRIVER_NAME = "Grappe Driver";
     QMidiOut midi;
 };
 

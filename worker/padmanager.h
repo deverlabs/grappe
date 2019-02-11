@@ -2,14 +2,14 @@
 #define PADMANAGER_H
 #include <QFile>
 #include <iostream>
- #include <QJsonDocument>
- #include <QJsonObject>
- #include <QJsonArray>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonArray>
 #include "buttonmanager.h"
 #include "ui_mainwindow.h"
 
-class padManager
-{
+class padManager : public QObject {
+
 public:
     padManager(QJsonObject configLoaded);
     void addButton(QJsonObject btnConf, Ui::MainWindow* ui);
@@ -19,11 +19,24 @@ public:
 
 
 public Q_SLOTS:
-     void LoadConfig(QJsonObject config);
+    void LoadConfig(QJsonObject config);
+
+public slots :
+    void handleClick();
+
+private slots:
+    void on_pushButton_2_clicked();
+
+    void on_pushButton3_clicked();
+
+    void on_dial_valueChanged(int value);
+
+    void on_verticalSlider_valueChanged(int value);
 
 private:
-  QList<buttonManager *> buttonsList;
-  QJsonArray buttons;
+    QList<buttonManager *> buttonsList;
+    QJsonArray buttons;
+
 
 };
 

@@ -1,7 +1,7 @@
 #ifndef BUTTONMANAGER_H
 #define BUTTONMANAGER_H
 #include <QString>
- #include <QJsonObject>
+#include <QJsonObject>
 
 class buttonManager
 {

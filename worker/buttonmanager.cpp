@@ -2,7 +2,7 @@
 
 buttonManager::buttonManager(QJsonObject btnConf)
 {
-   this->myBtn = btnConf;
+    this->myBtn = btnConf;
 }
 
 

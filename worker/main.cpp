@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
 
     QApplication a(argc, argv);
     MainWindow w;
-    QDesktopServices::openUrl(QUrl("file:///X:/grape/index.html"));
+    //QDesktopServices::openUrl(QUrl("file:///D:/grape/index.html"));
 
     w.show();
     return a.exec();

@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT += core gui network websockets
+QT += core gui network websockets serialport
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -55,9 +55,8 @@ include(thirdparty/QMidi/src/QMidi.pri)
 include(config.json)
 
 
-
 LIBS += -luser32
-LIBS += X:/grape/thirdparty/teVirtualMIDI64.lib
+LIBS += D:/grape/thirdparty/teVirtualMIDI64.lib
 
 DISTFILES += \
     config.json \

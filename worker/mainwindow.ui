@@ -20,7 +20,7 @@
       <x>10</x>
       <y>430</y>
       <width>311</width>
-      <height>16</height>
+      <height>31</height>
      </rect>
     </property>
     <property name="styleSheet">
@@ -34,7 +34,7 @@
     <property name="geometry">
      <rect>
       <x>310</x>
-      <y>80</y>
+      <y>50</y>
       <width>50</width>
       <height>64</height>
      </rect>
@@ -47,7 +47,7 @@
     <property name="geometry">
      <rect>
       <x>270</x>
-      <y>50</y>
+      <y>30</y>
       <width>22</width>
       <height>101</height>
      </rect>
@@ -62,8 +62,8 @@
    <widget class="QPushButton" name="pushButton_2">
     <property name="geometry">
      <rect>
-      <x>380</x>
-      <y>50</y>
+      <x>10</x>
+      <y>80</y>
       <width>141</width>
       <height>28</height>
      </rect>
@@ -72,17 +72,49 @@
      <string>PushButton</string>
     </property>
    </widget>
-   <widget class="QWidget" name="gridLayoutWidget">
+   <widget class="QPushButton" name="pushButton3">
+    <property name="geometry">
+     <rect>
+      <x>380</x>
+      <y>60</y>
+      <width>89</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Boom</string>
+    </property>
+   </widget>
+   <widget class="QGroupBox" name="groupBox">
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>160</y>
+      <y>150</y>
       <width>711</width>
-      <height>261</height>
+      <height>281</height>
      </rect>
     </property>
-    <layout class="QGridLayout" name="gridLayout"/>
+    <property name="title">
+     <string>Runtime generated</string>
+    </property>
+    <widget class="QWidget" name="gridLayoutWidget">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>20</y>
+       <width>671</width>
+       <height>251</height>
+      </rect>
+     </property>
+     <layout class="QGridLayout" name="gridLayout"/>
+    </widget>
    </widget>
+   <zorder>groupBox</zorder>
+   <zorder>dial</zorder>
+   <zorder>verticalSlider</zorder>
+   <zorder>pushButton_2</zorder>
+   <zorder>pushButton3</zorder>
+   <zorder>status_label</zorder>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
