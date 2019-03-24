@@ -1,0 +1,209 @@
+/**
+ *
+ * Apply your custom CSS here
+ *
+*/
+
+@font-face {
+    font-family: "Sailec";
+    src: url('./fonts/sailec.ttf')  format('truetype'); /* Safari, Android, iOS */
+}
+
+body {
+    font-family: Sailec;
+}
+
+a {
+}
+
+.web-version {
+    color: whitesmoke;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    padding: 15px;
+    letter-spacing: -0.05rem;
+}
+
+.sidebar-menu .logo-env {
+    padding: 25px 85px;
+}
+
+.logo img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+}
+
+.pad-core > div {
+    background-color: #333;
+    border-radius: 10px;
+    border: 0.1rem solid whitesmoke;
+}
+
+.pad-core .pad-btn {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: -5px;
+    margin-right: -5px;
+    background-color: #444;
+    height: 10vh;
+    color: whitesmoke;
+    border: 0.1rem solid #555;
+    border-radius: 5px;
+    padding: 15px;
+    position: relative;
+}
+.pad-core .pad-btn:hover {
+    cursor: pointer;
+}
+.pad-core .pad-btn:before {
+    top: 50%;
+    margin-top: -3px;
+    padding: 0;
+    position: absolute;
+    content: '';
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #fff;
+}
+
+.pad-core .pad-btn:after {
+    top: 50%;
+    margin-top: -35px;
+    padding: 0;
+    position: absolute;
+    content: '';
+    display: inline-block;
+    width: 8px;
+    height: 70px;
+    background-color: #333;
+    z-index: 2;
+}
+
+.pad-core .pad-btn.left:after {
+    right: -16px
+}
+
+.pad-core .pad-btn.right:after {
+    left: -16px
+}
+
+
+.pad-core .pad-btn.left:before {
+    left: 4px
+}
+
+.pad-core .pad-btn.right:before {
+   right: 4px
+}
+
+
+.pad-core .pad-center {
+    height: 30vh;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+@-webkit-keyframes glow {
+    0%, 100% {
+        -webkit-filter: drop-shadow(0 0 0px #fff)
+    }
+    50% {
+        -webkit-filter: drop-shadow(0 0 20px #fff)
+    }
+}
+
+
+.pad-core .pad-logo {
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.pad-core .pad-logo img {
+    position: relative;
+    height: 70px;
+    width: auto;
+}
+
+.pad-core .pad-logo img.glow {
+    -webkit-animation: glow 2s infinite;
+}
+
+
+.pad-core .status {
+    color: white;
+    text-align: center;
+    bottom: 15px;
+    position: absolute;
+    left: 0;
+    width: 100%;
+    font-size: 12px;
+    font-style: italic;
+}
+
+.pad-core .component {
+    position: relative;
+    height: 100%;
+}
+
+
+
+.pad-core .component img {
+    display: block;
+    height: 100%;
+    width: auto;
+    max-height: 80px;
+    max-width: 100%;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+}
+
+.line-arrow {
+    position: absolute;
+    top: 50%;
+    z-index: 1;
+    right: -50px;
+}
+
+.line-arrow-left {
+    position: absolute;
+    top: 50%;
+    z-index: 1;
+    left: -50px;
+}
+
+.component-tooltip-container {
+    padding: 15px;
+    width: 100%;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    height: 10vh;
+    position: relative;
+}
+
+.component-tooltip-container .component-tooltip {
+    background: #fff;
+    padding: 20px;
+    line-height: 1;
+    width: 100%;;
+    height: 100%;
+    position: relative;
+    border: 0.1rem solid #DDD;
+    border-radius: 5px;
+}
+
+.component-tooltip h2 {
+    font-size: 16px;
+    margin: 0;
+    font-weight: bold;
+}
