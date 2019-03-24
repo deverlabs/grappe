@@ -64,7 +64,7 @@ void SocketServer::onNewConnection()
     m_clients << pSocket;
 
     qDebug() << pSocket;
-    QJsonObject res {{"event", "connected"}, {"message", "Connected to grape version v0.1"}};
+    QJsonObject res {{"event", "connected"}, {"message", "Connected to grappe v0.1"}};
     QJsonDocument doc(res);
     pSocket->sendTextMessage(doc.toJson(QJsonDocument::Compact));
 

@@ -31,17 +31,13 @@ SOURCES += \
     buttonmanager.cpp \
     jsonparser.cpp \
     padmanager.cpp \
-    socketserver.cpp \
-    midimanager.cpp
-
+    socketserver.cpp
 HEADERS += \
         mainwindow.h \
     buttonmanager.h \
     jsonparser.h \
     padmanager.h \
-    socketsever.h \
-    virtualmidi.h \
-    midimanager.h
+    socketsever.h
 
 FORMS += \
         mainwindow.ui
@@ -56,7 +52,6 @@ include(config.json)
 
 
 LIBS += -luser32
-LIBS += D:/grape/thirdparty/teVirtualMIDI64.lib
 
 DISTFILES += \
     config.json \

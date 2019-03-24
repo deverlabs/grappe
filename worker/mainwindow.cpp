@@ -1,7 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "socketsever.h"
-#include "midimanager.h"
+#include "padmanager.h"
 #include <typeinfo>
 #include <QSerialPortInfo>
 #include <stdlib.h>
@@ -10,49 +10,12 @@
 #include "jsonparser.h"
 #include <QList>
 #include "padmanager.h"
-#include "midimanager.h"
 #include <QJsonArray>
 #include <ostream>
 #include <QtDebug>
 #include <QMutex>
 #include <stdio.h>
 #include <conio.h>
-#include "virtualmidi.h"
-
-#define MAX_SYSEX_BUFFER	65535
-
-QRegExp rx("[, ]");
-char *binToStr( const unsigned char *data, DWORD length ) {
-    static char dumpBuffer[ MAX_SYSEX_BUFFER * 3 ];
-    DWORD index = 0;
-
-    while ( length-- ) {
-        sprintf( dumpBuffer+index, "%02x", *data );
-        if ( length ) {
-            strcat( dumpBuffer, ":" );
-        }
-        index+=3;
-        data++;
-    }
-    return dumpBuffer;
-}
-
-void CALLBACK teVMCallback( LPVM_MIDI_PORT midiPort, LPBYTE midiDataBytes, DWORD length, DWORD_PTR dwCallbackInstance ) {
-    if ( ( NULL == midiDataBytes ) || ( 0 == length ) ) {
-        printf( "empty command - driver was probably shut down!\n" );
-        return;
-    }
-    if ( !virtualMIDISendData( midiPort, midiDataBytes, length ) ) {
-        printf( "error sending data: %d\n" + GetLastError() );
-        return;
-    }
-    printf( "command: %s\n", binToStr( midiDataBytes, length ) );
-}
-
-
-
-midiManager* a = new midiManager();
-
 
 
 QVector<QJsonValue>* vec = new QVector<QJsonValue>;
@@ -69,28 +32,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     ui->gridLayout->setColumnStretch(0, 3);
     ui->gridLayout->setColumnStretch(1, 3);
-    LPVM_MIDI_PORT port;
-    midiManager* midi = new midiManager();
-    printf( "teVirtualMIDI C loopback sample\n" );
-    printf( "using dll-version:    %ws\n", virtualMIDIGetVersion( NULL, NULL, NULL, NULL ));
-    printf( "using driver-version: %ws\n", virtualMIDIGetDriverVersion( NULL, NULL, NULL, NULL ));
-
-    virtualMIDILogging( TE_VM_LOGGING_MISC | TE_VM_LOGGING_RX | TE_VM_LOGGING_TX );
-
-    port = virtualMIDICreatePortEx2((const wchar_t*)midi->DRIVER_NAME.utf16(), teVMCallback, 0, MAX_SYSEX_BUFFER, TE_VM_FLAGS_PARSE_RX );
-    if ( !port ) {
-        printf( "could not create port: %d\n", GetLastError() );
-
-    }
-
-    qDebug () << "Virtual port created - press enter to close port again\n" ;
 
 
-
-
-    jsonParser file("D:/grape/config.json");
-    QJsonObject config = file.getConfig();
-    padManager* manager = new padManager(config);
+/*    padManager* manager = new padManager();
 
     foreach (const QJsonValue & v, manager->getButtons())
         manager->addButton(v.toObject(), ui);
@@ -99,27 +43,29 @@ MainWindow::MainWindow(QWidget *parent) :
 
     qInfo() << manager->getButton(0)->getValue().value("name").toString();
     qInfo() << manager->getButton(2)->getValue().value("name").toString();
-    qInfo() << manager->getButtons();
-    a->connectDriver();
+    qInfo() << manager->getButtons();*/
 
     sPort = new QSerialPort();
-    sPort->setBaudRate(QSerialPort::Baud115200);
-    sPort->setDataBits(QSerialPort::Data8);
-    sPort->setParity(QSerialPort::NoParity);
-    sPort->setStopBits(QSerialPort::OneStop);
-    sPort->setFlowControl(QSerialPort::NoFlowControl);
-    QList<QSerialPortInfo> list =  QSerialPortInfo::availablePorts();
-    qDebug() << "AVILABLE SERIAL PORTS:";
-    for(int i=0; i<list.size(); i++)
-    {
-        qDebug() << list[i].portName();
-    }
-    sPort->setPortName("COM4");
-    if (!sPort->open(QIODevice::ReadWrite)) {
-        qInfo() << "Error opening serial port: " << sPort->errorString();
-    }
+       sPort->setBaudRate(QSerialPort::Baud115200);
+       sPort->setDataBits(QSerialPort::Data8);
+       sPort->setParity(QSerialPort::NoParity);
+       sPort->setStopBits(QSerialPort::OneStop);
+       sPort->setFlowControl(QSerialPort::NoFlowControl);
+       QList<QSerialPortInfo> list =  QSerialPortInfo::availablePorts();
+       qDebug() << "AVILABLE SERIAL PORTS:";
+       for(int i=0; i<list.size(); i++)
+       {
+           qDebug() << list[i].portName();
+       }
+       sPort->setPortName("COM4");
+       if (!sPort->open(QIODevice::ReadWrite)) {
+           qInfo() << "Error opening serial port: " << sPort->errorString();
+       }
+       else {
+            connect(sPort, SIGNAL(readyRead()),this, SLOT(readArduinoData()));
+       }
 
-    connect(sPort, SIGNAL(readyRead()),this, SLOT(readArduinoData()));
+
 
 
 }
@@ -171,32 +117,16 @@ void MainWindow::on_socket_message(QJsonObject message)
 void MainWindow::on_dial_valueChanged(int value)
 {
 
-    QMidiEvent e;
-    e.setType(QMidiEvent::NoteOn);
-    e.setVoice(0);
-    e.setNote(60);
-    e.setVelocity(value);
-    a->midi.sendEvent(e);
 }
 
 void MainWindow::on_verticalSlider_valueChanged(int value)
 {
-    QMidiEvent e;
-    e.setType(QMidiEvent::NoteOn);
-    e.setVoice(1);
-    e.setNote(60);
-    e.setVelocity(value);
-    a->midi.sendEvent(e);
+
 }
 
 void MainWindow::on_pushButton3_clicked()
 {
-    QMidiEvent e;
-    e.setType(QMidiEvent::NoteOn);
-    e.setVoice(2);
-    e.setNote(60);
-    e.setVelocity(100);
-    a->midi.sendEvent(e);
+
 
 }
 
