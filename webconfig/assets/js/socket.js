@@ -2,25 +2,25 @@ var suit = [[], [], []];
 var hex = [[], [], []];
 
 $('.suit').keyup(function(e) {
-  suit[$(this).attr('id')].push(e.key) // input
-  hex[$(this).attr('id')].push("0x"+e.keyCode.toString(16)) // storage
+  suit[$(this).attr('id').substr(4)].push(e.key) // input
+  hex[$(this).attr('id').substr(4)].push("0x"+e.keyCode.toString(16)) // storage
   console.log(hex)
-  $(this).val(suit[$(this).attr('id')]+"")
+  $(this).val(suit[$(this).attr('id').substr(4)]+"")
 });
 
-$(document).ready(function() {
-
-
-
-let socket = new WebSocket('ws://127.0.0.1:1234')
 let initialized = false;
 let sendMessage = null;
 
+
+
+
 let emptyStep = function(val) {
   $('#'+val).val('');
-  suit[val] = [];
-  hex[val] = [];
+  suit[val.substr(4)] = [];
+  hex[val.substr(4)] = [];
 }
+$(document).ready(function() {
+  let socket = new WebSocket('ws://127.0.0.1:1234')
 function waitForConnection(socket) {
 
   socket.onopen = function (evt) {
@@ -59,7 +59,7 @@ function waitForConnection(socket) {
     }
   };
   socket.onclose = function(evt) {
-    console.log("Connexion closed")
+    console.log("Connection closed")
     if(initialized){
       $('#socket-status').html("Connexion to Grappe loosed").css({color : "#FF1C00"})
       $('#logo-status img').attr('src','assets/images/logo-stand.png').addClass('glow');
