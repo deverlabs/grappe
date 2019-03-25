@@ -82,22 +82,22 @@ bool componentPollValues(uint8_t slot) {
 
     case T_COMP_JOYSTICK:
     {
-      int16_t cur_Y = analogRead(pgm_read_byte(&SLOTS_PINS[slot][1]));
-      int16_t cur_X = analogRead(pgm_read_byte(&SLOTS_PINS[slot][2]));
-      /**if(cur_X - JOYSTICK_CENTER > JOYSTICK_THRESHOLD) {
+      int16_t cur_Y = analogRead(pgm_read_byte(&SLOTS_PINS[slot][1])) - JOYSTICK_CENTER;
+      int16_t cur_X = analogRead(pgm_read_byte(&SLOTS_PINS[slot][2])) - JOYSTICK_CENTER;
+      if(cur_X > JOYSTICK_THRESHOLD) {
+        values[slot] = 0;
+        hasChanged = true;
+      } else if(cur_X < -JOYSTICK_THRESHOLD) {
         values[slot] = 1;
         hasChanged = true;
-      } else if(cur_X - JOYSTICK_CENTER < JOYSTICK_THRESHOLD) {
+      } else if(cur_Y > JOYSTICK_THRESHOLD) {
+        values[slot] = 3;
+        hasChanged = true;
+      } else if(cur_Y < -JOYSTICK_THRESHOLD) {
         values[slot] = 2;
         hasChanged = true;
-      } else if(cur_Y - JOYSTICK_CENTER > JOYSTICK_THRESHOLD) {
-        values[slot] = 3;
-        hasChanged = true;
-      } else if(cur_Y - JOYSTICK_CENTER < JOYSTICK_THRESHOLD) {
-        values[slot] = 3;
-        hasChanged = true;
-      }*/
-      serialDebug( String(cur_Y) + "-" + String(cur_X) );
+      }
+
       break;
     }
 
