@@ -5,7 +5,7 @@ String eventString = "";         // a String to hold incoming data
 bool eventReceived = false;  // whether the string is complete
 
 #define EVENT_SET_LABEL 1
-#define ENABLE_DISPLAYS false
+#define ENABLE_DISPLAYS true
 
 void setup() {
     serialSetup();
@@ -20,8 +20,8 @@ void setup() {
     serialSendReadyEvent();
 
     
-    //componentPlug(T_COMP_DSWITCH, 0);
-    //componentPlug(T_COMP_PUSHBTN, 1);
+    componentPlug(T_COMP_DSWITCH, 0);
+    componentPlug(T_COMP_PUSHBTN, 1);
     //componentPlug(T_COMP_POTENTIOMETER, 2);
     //componentPlug(T_COMP_POTENTIOMETER, 3);
     componentPlug(T_COMP_JOYSTICK, 4);

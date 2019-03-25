@@ -32,3 +32,52 @@ Types d'events :
 Liste des events :
 * `1:{composant#}:{label}` : Affiche le label sur l'écran pour le composant #
 
+## Composants
+
+### Composant null - T_COMP_NULL (id 0)
+Dummy composant, utilisé lorsque le slot n'est pas utilisé (internal).
+
+### Bouton poussoir - T_COMP_PUSHBTN (id 1)
+
+Valeurs retournées :
+
+| Etat     |      Valeur   |
+|:----------:|:-------------:|
+| Non poussé |  0 |
+| Poussé |    1   |
+
+### Double Interrupteur - T_COMP_DSWITCH (id 2)
+
+Valeurs retournées :
+
+| Bouton 1   | Bouton 2     |      Valeur   |
+|:----------:|:----------:|:-------------:|
+| 0 | 0 | 0 |
+| 0 | 1 | 1 |
+| 1 | 0 | 2 |
+| 1 | 1 | 3 |
+
+### Potentiomètre - T_COMP_POTENTIOMETER (id 3)
+
+Renvoie une valeur théoriquement entre 0 et 1023.
+
+### Joystick - T_COMP_JOYSTICK (id 4)
+
+| Direction     |      Valeur   |
+|:----------:|:-------------:|
+| Haut |  0 |
+| Bas |    1   |
+| Gauche |    2   |
+| Droite |    3   |
+
+
+### Capteur de présence infrarouge - T_COMP_PIR (id 5)
+
+Non implémenté.
+
+| Direction     |      Valeur   |
+|:----------:|:-------------:|
+| Présence |  1 |
+| Non présence |    0   |
+
+
