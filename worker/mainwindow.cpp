@@ -57,7 +57,7 @@ MainWindow::MainWindow(QWidget *parent) :
        {
            qDebug() << list[i].portName();
        }
-       sPort->setPortName("COM4");
+       sPort->setPortName("COM7");
        if (!sPort->open(QIODevice::ReadWrite)) {
            qInfo() << "Error opening serial port: " << sPort->errorString();
        }
@@ -138,11 +138,40 @@ void MainWindow::readArduinoData()
     QByteArray byteArray = sPort->readLine();
     QString brut = QString(byteArray);
     QString data = brut.replace("\r\n", "");
-
     QStringList keys = data.split(rx, QString::SkipEmptyParts);
 
     qDebug() << keys;
-    if(keys[1] == "0" && keys[2] == "1") {
+    // Joystick
+    if(keys[1] == '4'){
+          INPUT* key = new INPUT[1];
+          key[0].type = INPUT_KEYBOARD;
+          key[0].ki.wScan = 0;
+          key[0].ki.time = 0;
+          key[0].ki.dwExtraInfo = 0;
+          key[0].ki.dwFlags = 0;
+
+        // up
+        if(keys[2]== '0'){
+               key[0].ki.wVk = 0x26;
+        }
+        //down
+        if(keys[2]== '1'){
+ key[0].ki.wVk = 0x28;
+        }
+        //left
+        if(keys[2]== '2'){
+            key[0].ki.wVk =  0x25;
+        }
+        //right
+        if(keys[2]== '3'){
+ key[0].ki.wVk = 0x27;
+        }
+        SendInput(1, &key[0], sizeof(INPUT));
+        key[0].ki.dwFlags = KEYEVENTF_KEYUP;
+        SendInput(1, &key[0], sizeof(INPUT));
+    }
+    // Btn
+     if(keys[1] == "1" && keys[2] == "1") {
         QRegExp rx("[, ]");
         QMutex mut;
         for(int i = 0; i < vec->size(); i++)
