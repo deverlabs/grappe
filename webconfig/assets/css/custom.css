@@ -16,6 +16,9 @@ body {
 a {
 }
 
+.sidebar-menu {
+    width: 220px
+}
 .web-version {
     color: whitesmoke;
     position: absolute;
@@ -27,7 +30,7 @@ a {
 }
 
 .sidebar-menu .logo-env {
-    padding: 25px 85px;
+    padding: 25px 25px;
 }
 
 .logo img {
@@ -49,7 +52,7 @@ a {
     margin-left: -5px;
     margin-right: -5px;
     background-color: #444;
-    height: 10vh;
+    height: 100px;
     color: whitesmoke;
     border: 0.1rem solid #555;
     border-radius: 5px;
@@ -104,7 +107,7 @@ a {
 
 
 .pad-core .pad-center {
-    height: 30vh;
+    height: 300px;
     margin-top: 20px;
     margin-bottom: 20px;
 }
@@ -183,11 +186,11 @@ a {
 }
 
 .component-tooltip-container {
-    padding: 15px;
+    padding: 10px;
     width: 100%;
     margin-top: 10px;
     margin-bottom: 10px;
-    height: 10vh;
+    height: 100px;
     position: relative;
 }
 
@@ -205,5 +208,6 @@ a {
 .component-tooltip h2 {
     font-size: 16px;
     margin: 0;
+    margin-bottom: 5px;
     font-weight: bold;
 }
