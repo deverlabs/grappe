@@ -15,6 +15,7 @@ int main(int argc, char *argv[])
     MainWindow w;
     //QDesktopServices::openUrl(QUrl("file:///D:/grape/index.html"));
 
-    w.show();
+    w.showMinimized();
+
     return a.exec();
 }
