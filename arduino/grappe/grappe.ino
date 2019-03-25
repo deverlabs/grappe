@@ -22,8 +22,8 @@ void setup() {
     
     componentPlug(T_COMP_DSWITCH, 0);
     componentPlug(T_COMP_PUSHBTN, 1);
-    componentPlug(T_COMP_POTENTIOMETER, 2);
-    componentPlug(T_COMP_POTENTIOMETER, 3);
+    //componentPlug(T_COMP_POTENTIOMETER, 2);
+    //componentPlug(T_COMP_POTENTIOMETER, 3);
     componentPlug(T_COMP_JOYSTICK, 4);
     //componentPlug(T_COMP_PIR, 5);
 }
