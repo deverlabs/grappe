@@ -1,0 +1,50 @@
+@import '../theme/variables';
+@import url('https://fonts.googleapis.com/css?family=Mukta:300,400,500');
+
+body {
+  background-color: $color-dark-gray;
+  font-family: 'Mukta', sans-serif;
+}
+
+h1,h2,h3,h4,h5,h6 {
+  letter-spacing: 0.02em;
+  font-weight: 500;
+}
+.App {
+  -webkit-transition:all 1000ms ease ;
+  -moz-transition:all 1000ms ease ;
+  -o-transition:all 1000ms ease ;
+  transition:all 1000ms ease ;
+  color: $color-white;
+
+  .header {
+    overflow: auto;
+    padding: 15px;
+
+    img {
+      float: left;
+      height: 70px;
+      margin-right: 1em;
+    }
+  }
+
+  hr {
+    margin-bottom: 0;
+    margin-top: 0;
+    opacity: 0.15;
+  }
+}
+
+@media (max-width: $small-breakpoint) {
+  p {
+    line-height: 18px;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+  }
+}
+
+p {
+ letter-spacing: 0.01em;
+}
+
+

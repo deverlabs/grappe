@@ -1,0 +1,212 @@
+@import '../../theme/variables';
+
+
+.fullWith {
+  width: 100vw;
+  font-size: 14px;
+}
+
+.leftPart {
+  width: calc(50vw - 20px);
+  height: 100vh;
+  float: left;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-transition: background-color 1000ms linear;
+  transition: background-color 1000ms linear;
+}
+
+
+.rightPart {
+  width: calc(50vw + 20px);
+  height: 100vh;
+  overflow: hidden;
+
+}
+
+.rightPart3 {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+
+}
+
+.rightPart2 {
+  top: 0;
+  left: calc(50vw - 3px);
+  height: 100%;
+  position: fixed;
+  z-index: 5;
+  padding: 100px 0 !important;
+
+}
+
+
+
+
+.imageProfileContainer {
+  width: 200px;
+  height: 200px;
+  -webkit-transition:all 100ms ease ;
+  -moz-transition:all 100ms ease ;
+  -o-transition:all 100ms ease ;
+  transition:all 100ms ease ;
+  border-radius: 50%;
+  padding: 3px;
+  background: rgb(106,48,242); /* Old browsers */
+  background: -moz-linear-gradient(-45deg, $main_colour 0%, $second_colour 100%); /* FF3.6-15 */
+  background: -webkit-linear-gradient(-45deg, $main_colour 0%, $second_colour 100%); /* Chrome10-25,Safari5.1-6 */
+  background: linear-gradient(135deg, $main_colour 0%, $second_colour 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+  z-index: 2;
+  position: relative;
+}
+
+
+
+.profile {
+  border-radius: 50%;
+   width: 100%;
+   height: 100%;
+}
+
+.forceProfileContainer {
+  display: -webkit-box;
+}
+
+.rightContent {
+  width: 100%;
+  height: 100%;
+  padding-left: 21px!important;
+}
+
+.rightContent::-webkit-scrollbar {display:none;}
+
+
+
+.centerParent {
+  position: relative;
+  text-align: center;
+  display: block;
+  -webkit-transition:all 100ms ease ;
+  -moz-transition:all 100ms ease ;
+  -o-transition:all 100ms ease ;
+  transition:all 100ms ease ;
+}
+.centerChild{
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.whoIAmReduced {
+display: block;
+}
+
+.whoIAm {
+  display: block;
+}
+
+
+.flags {
+  position: absolute;
+  z-index: 9999;
+  padding: 5px;
+  right: 2px
+}
+
+
+
+.flags img {
+  height: 25px;
+  padding: 2px;
+  -webkit-transition:all 200ms ease ;
+  -moz-transition:all 200ms ease ;
+  -o-transition:all 200ms ease ;
+  transition:all 200ms ease ;
+  filter: grayscale(60%);
+
+}
+
+
+.flags img.active {
+  filter: grayscale(0%) drop-shadow(0 0 2px #bbb) !important;
+}
+.flags img:hover {
+  cursor: pointer
+}
+
+.layer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+
+
+@media (max-width: $medium-breakpoint) {
+  .leftPart {
+    width: 100vw;
+    height: calc(50vh - 20px);
+  }
+
+  .rightPart {
+    width: 100vw;
+    height: calc(50vh + 20px);
+
+  }
+
+  .rightPart2 {
+    top: 50vh;
+    left: 0;
+    width: 100%;
+    height: auto;
+    padding: 0 100px !important;
+  }
+
+  .rightContent {
+    padding-top: 21px!important;
+    padding-left: 0!important;
+  }
+
+  .imageProfileContainer {
+    width: 150px;
+    height: 150px;
+  }
+
+  .whoIAmReduced {
+    padding-left: 35px;
+    text-align: left;
+    display: inline-block;
+  }
+  .flags img {
+    height: 18px;
+  }
+}
+
+@media (max-width: $small-breakpoint) {
+  .rightPart2 {
+    top: 50vh;
+    left: 0;
+    width: 100%;
+    padding: 0 30px !important;
+  }
+  .imageProfileContainer {
+    width: 100px;
+    height: 100px;
+  }
+
+  .whoIAmReduced {
+    display: none;
+  }
+  .whoIAm {
+    display: none;
+  }
+
+}
+
+@media (max-height: $small-breakpoint) {
+  .imageProfileContainer {
+    width: 150px;
+    height: 150px;
+  }
+}

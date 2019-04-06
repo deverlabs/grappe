@@ -1,0 +1,30 @@
+{
+  "presets": [
+    [
+      "@babel/preset-env",
+      {
+        "useBuiltIns": "usage",
+        "corejs": "core-js@3"
+      }
+    ],
+    "@babel/preset-react",
+    "@babel/preset-flow"
+  ],
+  "env": {
+    "production": {
+      "plugins": [
+        "transform-remove-console",
+        "transform-react-remove-prop-types"
+      ]
+    }
+  },
+  "plugins": [
+    "react-loadable/babel",
+    "react-hot-loader/babel",
+    "dynamic-import-node",
+    "@babel/plugin-proposal-class-properties",
+    "@babel/plugin-proposal-object-rest-spread",
+    "@babel/plugin-proposal-optional-chaining",
+    "@babel/plugin-proposal-export-default-from"
+  ]
+}

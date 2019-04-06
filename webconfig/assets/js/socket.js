@@ -23,8 +23,18 @@ $(document).ready(function() {
   let socket = new WebSocket('ws://127.0.0.1:1234')
 function waitForConnection(socket) {
 
+    function Ping(){
+      setInterval(function(){
+        socket.send(
+            JSON.stringify({
+              ping: true
+            })
+        )
+      }, 1000)
+    }
   socket.onopen = function (evt) {
     console.log('Opened')
+    //Ping()
     sendMessage = function() {
       console.log(socket)
       socket.send(
@@ -49,6 +59,8 @@ function waitForConnection(socket) {
   };
   socket.onmessage = function (evt) {
     let response = JSON.parse(evt.data)
+    response =  JSON.parse(response)
+    console.log(response)
     switch (response.event){
       case 'connected' :
         initialized = true;
