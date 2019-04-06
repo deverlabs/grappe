@@ -4,6 +4,7 @@ uint8_t slots[6] = {T_COMP_NULL};
 
 /* To be changed, because for testing we assume we only have 1 value per component */
 uint16_t values[6] = {0};
+uint16_t alt_values[6] = {0}; /* Potentiometer */
 
 void componentPlug(uint8_t type, uint8_t slot) {
   slots[slot] = type;
@@ -25,6 +26,8 @@ void componentPlug(uint8_t type, uint8_t slot) {
       pinMode(pgm_read_byte(&SLOTS_PINS[slot][0]), OUTPUT);
       digitalWrite(pgm_read_byte(&SLOTS_PINS[slot][0]), LOW); // Ground
       pinMode(pgm_read_byte(&SLOTS_PINS[slot][2]), INPUT);
+      values[slot] = 1;
+      alt_values[slot] = analogRead(pgm_read_byte(&SLOTS_PINS[slot][2]));
       break;
 
     case T_COMP_JOYSTICK:
@@ -71,10 +74,20 @@ bool componentPollValues(uint8_t slot) {
 
     case T_COMP_POTENTIOMETER:
     {
-      old = values[slot];
+      uint16_t oldRead = alt_values[slot];
+      
+      old = alt_values[slot];
+      //Serial.println(map(analogRead(pgm_read_byte(&SLOTS_PINS[slot][2])), 0, 1023, 0, 255));
       // Avoid too frequent updates using an update threshold
-      if(abs(analogRead(pgm_read_byte(&SLOTS_PINS[slot][2])) - old) > POTENTIOMETER_THRESHOLD) {
-        values[slot] = analogRead(pgm_read_byte(&SLOTS_PINS[slot][2]));
+      if(abs(map(analogRead(pgm_read_byte(&SLOTS_PINS[slot][2])), 0, 1023, 0, 255) - old) > POTENTIOMETER_THRESHOLD) {
+        alt_values[slot] = map(analogRead(pgm_read_byte(&SLOTS_PINS[slot][2])), 0, 1023, 0, 255);
+
+        if(map(analogRead(pgm_read_byte(&SLOTS_PINS[slot][2])), 0, 1023, 0, 255) < oldRead ) {
+          values[slot] = 1;
+        } else {
+          values[slot] = 0;
+        }
+        
         hasChanged = true;
       }
       break;
