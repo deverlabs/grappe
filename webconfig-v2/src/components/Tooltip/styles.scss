@@ -1,0 +1,46 @@
+.line-arrow {
+    position: absolute;
+    top: 50%;
+    z-index: 1;
+    right: -50px;
+    margin-top: -3px;
+}
+
+.line-arrow-left {
+    position: absolute;
+    top: 50%;
+    z-index: 1;
+    left: -50px;
+    margin-top: -3px;
+}
+
+.component-tooltip-container {
+    padding: 10px;
+    width: 100%;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    height: 100px;
+    position: relative;
+}
+
+.component-tooltip-container .component-tooltip {
+    background: #fff;
+    padding: 10px;
+    line-height: 1;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    border: 0.1rem solid #DDD;
+    border-radius: 5px;
+}
+
+.component-tooltip h2 {
+    font-size: 16px;
+    margin: 0;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.component-tooltip span {
+    font-size: 15px;
+}

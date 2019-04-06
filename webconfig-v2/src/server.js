@@ -26,7 +26,7 @@ app.use(hpp());
 app.use(compression());
 // Use for http request debug (show errors only)
 app.use(logger('dev', { skip: (req, res) => res.statusCode < 400 }));
-app.use(favicon(path.resolve(process.cwd(), 'public/favicon.ico')));
+app.use(favicon(path.resolve(process.cwd(), 'public/images/favicon.png')));
 app.use(express.static(path.resolve(process.cwd(), 'public')));
 app.use('/locales', express.static(path.resolve(process.cwd(), 'src/locales')))
 
@@ -68,7 +68,7 @@ app.get('*', (req, res) => {
   return render(req,res)
 });
 
-if (port) {
+if (port) { 
   Loadable.preloadAll().then(() => {
     app.listen(port, host, err => {
       const url = `http://${host}:${port}`;

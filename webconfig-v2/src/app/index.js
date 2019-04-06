@@ -6,6 +6,7 @@ import { renderRoutes } from 'react-router-config';
 import Helmet from 'react-helmet';
 import { hot } from 'react-hot-loader';
 import c from '../config';
+import 'bootstrap/dist/css/bootstrap.css';
 import 'normalize.css/normalize.css'; // eslint-disable-line import/first
 import styles from './styles.scss';
 

@@ -2,7 +2,7 @@
 @import url('https://fonts.googleapis.com/css?family=Mukta:300,400,500');
 
 body {
-  background-color: $color-dark-gray;
+  background-color: #eee;
   font-family: 'Mukta', sans-serif;
 }
 
@@ -11,11 +11,11 @@ h1,h2,h3,h4,h5,h6 {
   font-weight: 500;
 }
 .App {
-  -webkit-transition:all 1000ms ease ;
-  -moz-transition:all 1000ms ease ;
-  -o-transition:all 1000ms ease ;
-  transition:all 1000ms ease ;
-  color: $color-white;
+  // -webkit-transition:all 1000ms ease ;
+  // -moz-transition:all 1000ms ease ;
+  // -o-transition:all 1000ms ease ;
+  // transition:all 1000ms ease ;
+  color: #444;
 
   .header {
     overflow: auto;
