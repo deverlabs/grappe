@@ -16,6 +16,12 @@ export class Main extends Component<Props> {
     this.state = {
       socketStatus: 0
     };
+
+    //this.editComponent = this.editComponent.bind(this);
+  }
+
+  editComponent(id) {
+    console.log(id);
   }
 
   render() {
@@ -44,9 +50,9 @@ export class Main extends Component<Props> {
             <Col xs={6} className={styles['pad-core']}>
               <Row>
                 <Col xs={4}>
-                  <Module module={this.modules[4]} pos="left" id="4" />
-                  <Module module={this.modules[2]} pos="left" id="2" />
-                  <Module module={this.modules[0]} pos="left" id="0" />
+                  <Module module={this.modules[4]} pos="left" id="4" onClick={this.editComponent}/>
+                  <Module module={this.modules[2]} pos="left" id="2" onClick={this.editComponent}/>
+                  <Module module={this.modules[0]} pos="left" id="0" onClick={this.editComponent}/>
                 </Col>
 
                 <Col xs={4}>
@@ -67,9 +73,9 @@ export class Main extends Component<Props> {
                 </Col>
 
                 <Col xs={4}>
-                  <Module module={this.modules[5]} pos="right" id="5" />
-                  <Module module={this.modules[3]} pos="right" id="3" />
-                  <Module module={this.modules[1]} pos="right" id="1" />
+                  <Module module={this.modules[5]} pos="right" id="5" onClick={this.editComponent}/>
+                  <Module module={this.modules[3]} pos="right" id="3" onClick={this.editComponent}/>
+                  <Module module={this.modules[1]} pos="right" id="1" onClick={this.editComponent}/>
                 </Col>
               </Row>
             </Col>

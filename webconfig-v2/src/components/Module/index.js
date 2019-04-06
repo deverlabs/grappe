@@ -7,10 +7,11 @@ import styles from './styles.scss';
 type Props = {
     pos: 'left' | 'right',
     module: Object,
-    id: Number
+    id: Number,
+    onClick: Function
 };
 
-export default ({ pos, module, id }: Props) => {
+export default ({ pos, module, id, onClick }: Props) => {
   const imgTypes = {
     'btn-red': 'images/comps/btn-red.png',
     'btn': 'images/comps/btn.png',
@@ -21,7 +22,7 @@ export default ({ pos, module, id }: Props) => {
   };
 
   return (
-    <div className={cn([ styles['pad-btn'], styles[pos] ])} id={id}>
+    <div role="button" onClick={(e) => onClick(id)} className={cn([ styles['pad-btn'], styles[pos] ])} id={id}>
       <div className={styles.component}>
         <img src={imgTypes[module.type]} alt={imgTypes[module.type]} />
       </div>
