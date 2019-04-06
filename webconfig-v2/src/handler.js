@@ -6,7 +6,6 @@ import { getBundles } from 'react-loadable/webpack';
 import Helmet from 'react-helmet';
 import { renderToString } from 'react-dom/server';
 import chalk from 'chalk';
-import React from 'react';
 import renderHtml from './utils/renderHtml';
 import routes from './routes';
 
@@ -17,17 +16,6 @@ export default (req, res) => {
       const modules = [];
       const staticContext = {};
 
-      const AppComponent = (
-
-          <Loadable.Capture report={moduleName => modules.push(moduleName)}>
-            {/* Setup React-Router server-side rendering */}
-            <StaticRouter location={req.path} context={staticContext}>
-              {renderRoutes(routes)}
-            </StaticRouter>
-          </Loadable.Capture>
-
-
-      );
 
       // Check if the render result contains a redirect, if so we need to set
       // the specific status and redirect header and end the response
@@ -41,7 +29,6 @@ export default (req, res) => {
       const status = staticContext.status === '404' ? 404 : 200;
 
       const head = Helmet.renderStatic();
-      const htmlContent = renderToString(AppComponent);
 
 
       // $FlowFixMe: isn't an issue
@@ -75,8 +62,7 @@ export default (req, res) => {
         .status(status)
         .send(renderHtml(
           head,
-          assets,
-          htmlContent
+          assets
         ));
 
 

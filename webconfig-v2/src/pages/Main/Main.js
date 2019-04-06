@@ -4,6 +4,8 @@ import React, { Component } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import Tooltip from '../../components/Tooltip';
 import Module from '../../components/Module';
+import gstyles from '../../theme/global.scss';
+import Socket from '../../components/Socket';
 import styles from './styles.scss';
 
 type Props = { };
@@ -11,12 +13,12 @@ type Props = { };
 export class Main extends Component<Props> {
 
   constructor(props) {
-    super(props);
-
-    this.state = {
-      socketStatus: 0
+    super();
+    this.state= {
+      socket: null,
+      welcome : null,
+      hardware: null
     };
-
     this.editComponent = this.editComponent.bind(this);
   }
 
@@ -24,7 +26,29 @@ export class Main extends Component<Props> {
     console.log(id);
   }
 
+  sendToModule(object){
+    if(this.state?.socket?.readyState === 1)
+      return this.state.socket.sendMessage(object);
+    console.log('Connexion not established');
+  }
+
+  socketChanged(e){
+    this.setState({ socket: e });
+  }
+
+  handleMessage(data) {
+    console.log(data);
+    if(data?.event === 'connected') {
+      this.setState({ welcome: data.message });
+    }
+    else if(data?.event === 'ping') {
+      this.setState({ hardware: data.event.ping });
+    }
+  }
+
   render() {
+    const { welcome, hardware } = this.state;
+
     this.modules = [
       { title: 'Interrupteurs', type: 'btns', desc: 'Active ou désactive un paramètre.' },
       { title: 'Bouton poussoir', type: 'btn-red', desc: 'Déclenche une action.' },
@@ -34,8 +58,10 @@ export class Main extends Component<Props> {
       { title: 'Capteur de présence', type: 'btn', desc: 'S\'active si une présence est détectée.' },
     ];
 
+    console.log('render');
     return (
-      <div>
+      <Socket onMessage={(m) => this.handleMessage(m)}
+        onSocketChange={(e) => this.socketChanged(e)}>
         <div className={styles.headerLogo}>
           <img alt="grappe logo" src="images/logo.png" />
         </div>
@@ -85,8 +111,32 @@ export class Main extends Component<Props> {
               <Tooltip module={this.modules[1]} pos="right" />
             </Col>
           </Row>
+          <div>
+            {(this.state?.socket?.readyState === 1) ? welcome : 'Connecting...'}
+          </div>
+          <div>
+            {(hardware === 0) ? 'Grappe plugged-in' : 'Grappe not plugged-in'}
+          </div>
+
+          <div>
+
+            <button onClick={() => this.sendToModule({ id : 9999, // Change si tu veux test
+              content: { 'buttonName': 'Run facebook', // Ta capté
+                'keys': [ // Suite a executer
+                  { 'type': 'process', 'command': 'explorer https://google.fr', 'sleep': '2000' }, // Commande CMD a exec, sleep 1000ms avant la prochaine étape
+                  { 'type': 'text', 'text': 'Meteo' }, // Ecrire du texte
+                  { 'type': 'suit', 'keys': ['0x0D'] } // Faire une suite de hotkey ici seuelement enter
+                ] } })}></button>
+
+            <button onClick={() => this.sendToModule({ id : 0, // Button id
+              content: { 'buttonName': 'Zoom', // Ta capté
+                'keys': [ // Suite a executer
+                  { 'type': 'suit', 'keys': ['0x11', '0:scrollDown', '1:scrollUp'] } // Commande CMD a exec, sleep 1000ms avant la prochaine étape
+                ] } })}>Update module</button>
+            <button onClick={() => this.sendToModule({ 'test' : '1:0:0' })}>Test click module</button>
+          </div>
         </Container>
-      </div>
+      </Socket>
     );
   }
 }

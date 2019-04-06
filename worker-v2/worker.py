@@ -58,7 +58,6 @@ class VirtualKey():
         return os.popen(command)
     def mouseAction(self, action_type):
         if action_type == "scrollUp":
-            print("wheelup")
             return mouse.wheel(1)
         elif action_type == "scrollDown":
             return mouse.wheel(-1)
@@ -100,9 +99,14 @@ class WSHandler(tornado.websocket.WebSocketHandler):
         self.write_message(json.dumps('{"event": "connected", "message" : "Connected to Grappe v0.9"}'))
 
     def on_message(self, message):
-        Grappe.updateComponent(0, message)
-        Grappe.getComponent(0)
         print(message)
+        res = json.loads(message)
+        print(message)
+        if 'test' in res['object']:
+             event = res['object']['test']
+             Grappe.runComponent(int(event[2]), bool(int(event[4])))
+             return
+        Grappe.updateComponent(int(res['object']['id']), res['object']['content'])
 
     def on_close(self):
         global CLIENT_CONNECTED, CLIENT
@@ -190,7 +194,7 @@ class Manager(Thread):
             serialPort = serial.Serial(port="COM5", baudrate=115200, bytesize=8, timeout=2,
                                        stopbits=serial.STOPBITS_ONE)
             serialString = ""
-            writeToClient(json.dumps('{"ping": "connected"}'))
+            writeToClient(json.dumps('{"ping": 1}'))
 
             while (True):
                 if (serialPort.in_waiting > 0):
@@ -205,7 +209,7 @@ class Manager(Thread):
             if PING_SENDED is not True:
                 if CLIENT is not None:
                     PING_SENDED = True
-                writeToClient(json.dumps('{"ping": "disconnected"}'))
+                writeToClient(json.dumps('{"ping": 0}'))
             return self.run(True)
 
 
@@ -215,19 +219,7 @@ if __name__ == "__main__":
         Grappe.start()
         Socket = SocketServer("localhost", 1234)
         Socket.start()
-        Grappe.updateComponent(0, {"buttonName": "Run google", "keys": [
-            {"type": "process", "command": "explorer https://google.fr", "sleep": "1000"},
-            {"type": "text", "text": "Coucou"},
-            {"type": "suit", "keys": ["0x0D"]}
-        ]})
-        Grappe.updateComponent(1, {"buttonName": "Scroll", "keys": [{"type": "suit", "keys": ["0xAF"]}]})
-        Grappe.updateComponent(2, {"buttonName": "Write", "keys": [{"type": "text", "text": "ppp"}]})
-        time.sleep(1)
-        Grappe.runComponent(0, True)
-        time.sleep(0.5)
-       # Grappe.runComponent(1, True)
-        time.sleep(5)
-        #Grappe.runComponent(2, True)
+
 
 
     except KeyboardInterrupt:

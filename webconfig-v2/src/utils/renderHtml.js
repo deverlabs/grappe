@@ -5,7 +5,6 @@ import serialize from 'serialize-javascript';
 export default (
   head: Object,
   assets: Array,
-  htmlContent: string
 ): string => {
   const styles = assets.filter(file => file.endsWith('.css'));
   const scripts = assets.filter(file => file.endsWith('.js'));
@@ -40,7 +39,7 @@ export default (
       <body>
         
         <!-- Insert the router, which passed from server-side -->
-        <div id="react-view">${htmlContent}</div>
+        <div id="react-view"></div>
 
         <!-- Insert bundled scripts into <script> tag -->
         ${scripts.map(file => `<script src="${file}"></script>`).join('\n')}

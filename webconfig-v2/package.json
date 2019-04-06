@@ -166,7 +166,8 @@
     "react-tilt": "^0.1.4",
     "serialize-javascript": "^1.6.1",
     "serve-favicon": "^2.5.0",
-    "styled-components": "^4.2.0"
+    "styled-components": "^4.2.0",
+    "ws": "^6.2.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.4.3",
