@@ -1,0 +1,78 @@
+@import './variables';
+
+.customTitleContainer {
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+
+.customTitle > h4 {
+  position: relative;
+  display: inline-block;
+  text-align: center;
+  margin-bottom: 3px;
+  margin-top: 3px;
+}
+
+.customTitle > span {
+  display: inline-block;
+  margin-left: 10px;
+  top: 2px;
+  position: relative;
+  font-size: 15px;
+}
+
+.customTitle > p {
+  display: block;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.customTitle > h4::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  height: 4px !important;
+  width: 98%;
+  left: 0;
+  background-color: $main_colour;
+  transition: 0.4s ease-out all .1s;
+  border-radius: 5px;
+}
+
+.tile {
+  transition-property: all;
+  transition-duration: 0.2s; /* on aurait pu écrire 500ms également */
+  transition-timing-function: cubic-bezier(.03, .98, .52, .99);
+  cursor: pointer;
+}
+.tileNoBg {
+  transition-property: all;
+  transition-duration: 1s; /* on aurait pu écrire 500ms également */
+  transition-timing-function: cubic-bezier(.03, .98, .52, .99);
+  cursor: pointer;
+}
+
+
+.tile:hover {
+  background-color: rgba(255, 255, 255, 0.8);
+}
+.tileNoBg:hover {
+  background: none;
+  filter: drop-shadow(0 0 8px #bbb) !important;
+}
+.tileClicked * {
+  color: $color-dark-gray;
+}
+.tileClickedNoBg {
+  filter: drop-shadow(0 0 10px #aaa) !important;
+}
+
+.tile:hover * {
+  color: $color-dark-gray;
+}
+
+.tileClicked {
+  background-color: rgba(255, 255, 255, 0.8);
+  box-shadow: 0 0 20px 0.1px rgba(255,255,255,0.2);
+}

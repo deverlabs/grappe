@@ -1,0 +1,105 @@
+{
+  "parser": "babel-eslint",
+  "extends": [
+    "airbnb",
+    "prettier",
+    "prettier/react",
+    "plugin:flowtype/recommended"
+  ],
+  "plugins": [
+    "flowtype",
+    "jsx-a11y",
+    "react",
+    "eslint-plugin-import"
+
+  ],
+  "settings": {
+    "import/resolver": {
+      "webpack": {
+        "config": "./tools/webpack/config.js"
+      }
+    }
+  },
+  "env": {
+    "browser": true,
+    "node": true,
+    "jest": true,
+    "es6": true
+  },
+  "rules": {
+    "max-len": [
+      "warn",
+      { "code": 280, "tabWidth": 2 }
+    ],
+    "indent": [
+      "error",
+      2,
+      { "SwitchCase": 1 }
+    ],
+    "quotes": [
+      2,
+      "single"
+    ],
+    "import/order": ["error", {"newlines-between": "never"}],
+    "import/no-unresolved": "off",
+    "import/no-named-as-default" : "off",
+    "import/no-extraneous-dependencies": ["error", {"devDependencies": true}],
+    "no-multi-spaces" :  [
+      "error"
+    ],
+    "padding-line-between-statements": [
+      "error",
+      { "blankLine": "always", "prev": ["const", "let", "var"], "next": "*"},
+      { "blankLine": "any",    "prev": ["const", "let", "var"], "next": ["const", "let", "var"]}],
+
+    "comma-spacing": ["error", { "before": false, "after": true } ],
+    "no-multiple-empty-lines": ["error", { "max": 2, "maxEOF": 1 }],
+    "object-curly-spacing": [
+      2,
+      "always"
+    ],
+    "linebreak-style": [
+      2,
+      "unix"
+    ],
+    "no-console": "off",
+    "no-unused-vars": "warn",
+    "react/no-unescaped-entities": "off",
+    "semi": [
+      2,
+      "always"
+    ],
+    "global-require": "off",
+    "no-underscore-dangle": "off",
+    "function-paren-newline": "off",
+    "jsx-a11y/interactive-supports-focus": "off",
+    "jsx-a11y/click-events-have-key-events": "off",
+    "react/jsx-filename-extension": [
+      "error",
+      {
+        "extensions": [
+          ".js",
+          ".jsx"
+        ]
+      }
+    ],
+    "react/destructuring-assignment": "warn",
+    "import/no-cycle": "off",
+    "jsx-a11y/anchor-is-valid": [
+      "warn",
+      {
+        "specialLink": [
+          "to"
+        ]
+      }
+    ],
+    "lodash/import-scope": "off",
+    "lodash/prefer-noop": "off",
+    "lodash/prefer-lodash-method": "off"
+  },
+  "globals": {
+    "__CLIENT__": true,
+    "__SERVER__": true,
+    "__DEV__": true
+  }
+}
