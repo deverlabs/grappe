@@ -17,7 +17,7 @@ export class Main extends Component<Props> {
       socketStatus: 0
     };
 
-    //this.editComponent = this.editComponent.bind(this);
+    this.editComponent = this.editComponent.bind(this);
   }
 
   editComponent(id) {
