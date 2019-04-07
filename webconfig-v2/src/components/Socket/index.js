@@ -21,7 +21,7 @@ class Socket extends Component <Props>{
     const { socket } = this.state;
     const { onSocketChange } = this.props;
 
-    //console.log(socket?.readyState);
+    // console.log(socket?.readyState);
     onSocketChange(socket);
     if(socket?.readyState !== 1) {
       setTimeout(() => {

@@ -36,6 +36,7 @@ export class Main extends Component<Props> {
   }
 
   onPresetSelect(preset) {
+    const { editingModuleID } = this.state;
     const parameterBag = {
       id: this.state.editingModuleID,
       content: {
@@ -62,8 +63,10 @@ export class Main extends Component<Props> {
   }
 
   sendToModule(object) {
-    if(this.state?.socket?.readyState === 1) {
-      return this.state.socket.sendMessage(object);
+    const { socket } = this.state;
+
+    if(socket?.readyState === 1) {
+      return socket.sendMessage(object);
     }
     console.log('Connection not established');
     return null;
@@ -74,7 +77,6 @@ export class Main extends Component<Props> {
   }
 
   handleMessage(data) {
-    console.log(data);
     if(data?.event === 'connected') {
       this.setState({ welcome: data.message });
     } else if(data?.event === 'ping') {
@@ -83,7 +85,7 @@ export class Main extends Component<Props> {
   }
 
   render() {
-    const { welcome, hardware } = this.state;
+    const { welcome, hardware, modules, socket, editingModuleID } = this.state;
 
     return (
       <Socket onMessage={(m) => this.handleMessage(m)} onSocketChange={(e) => this.socketChanged(e)}>
@@ -94,27 +96,27 @@ export class Main extends Component<Props> {
         <Container>
           <Row>
             <Col xs={3}>
-              <Tooltip module={this.state.modules[4]} pos="left"/>
-              <Tooltip module={this.state.modules[2]} pos="left"/>
-              <Tooltip module={this.state.modules[0]} pos="left"/>
+              <Tooltip module={modules[4]} pos="left"/>
+              <Tooltip module={modules[2]} pos="left"/>
+              <Tooltip module={modules[0]} pos="left"/>
             </Col>
             <Col xs={6} className={styles['pad-core']}>
               <Row>
                 <Col xs={4}>
-                  <Module module={this.state.modules[4]} pos="left" id="4" onClick={this.editComponent}/>
-                  <Module module={this.state.modules[2]} pos="left" id="2" onClick={this.editComponent}/>
-                  <Module module={this.state.modules[0]} pos="left" id="0" onClick={this.editComponent}/>
+                  <Module module={modules[4]} pos="left" id="4" onClick={this.editComponent}/>
+                  <Module module={modules[2]} pos="left" id="2" onClick={this.editComponent}/>
+                  <Module module={modules[0]} pos="left" id="0" onClick={this.editComponent}/>
                 </Col>
 
                 <Col xs={4}>
                   <div className={styles['pad-center']}>
                     <div className={styles['pad-logo']}>
                       <div className={styles.logo} id="logo-status">
-                        {(this.state?.socket?.readyState === 1) ? <img src="images/logo-stand-orange.png" alt="connected"/> : <img className={styles.glow} src="images/logo-stand.png" alt="searching"/>}
+                        {(socket?.readyState === 1) ? <img src="images/logo-stand-orange.png" alt="connected"/> : <img className={styles.glow} src="images/logo-stand.png" alt="searching"/>}
                       </div>
                     </div>
                     <div className={ styles.status }>
-                      {(this.state?.socket?.readyState === 1) ? <span className={styles['socket-status_connected']}>{welcome}</span> : <span className={styles['socket-status_searching']}>Looking for a Grappe ...</span>}
+                      {(socket?.readyState === 1) ? <span className={styles['socket-status_connected']}>{welcome}</span> : <span className={styles['socket-status_searching']}>Looking for a Grappe ...</span>}
                       <br />
                       {(hardware === 0) ? 'Grappe plugged-in' : 'Grappe not plugged-in'}
                     </div>
@@ -122,30 +124,30 @@ export class Main extends Component<Props> {
                 </Col>
 
                 <Col xs={4}>
-                  <Module module={this.state.modules[5]} pos="right" id="5" onClick={this.editComponent}/>
-                  <Module module={this.state.modules[3]} pos="right" id="3" onClick={this.editComponent}/>
-                  <Module module={this.state.modules[1]} pos="right" id="1" onClick={this.editComponent}/>
+                  <Module module={modules[5]} pos="right" id="5" onClick={this.editComponent}/>
+                  <Module module={modules[3]} pos="right" id="3" onClick={this.editComponent}/>
+                  <Module module={modules[1]} pos="right" id="1" onClick={this.editComponent}/>
                 </Col>
               </Row>
             </Col>
             <Col xs={3}>
-              <Tooltip module={this.state.modules[5]} pos="right" />
-              <Tooltip module={this.state.modules[3]} pos="right" />
-              <Tooltip module={this.state.modules[1]} pos="right" />
+              <Tooltip module={modules[5]} pos="right" />
+              <Tooltip module={modules[3]} pos="right" />
+              <Tooltip module={modules[1]} pos="right" />
             </Col>
           </Row>
 
-          <Editor modules={this.state.modules}
-            moduleid={this.state.editingModuleID}
+          <Editor modules={modules}
+            moduleid={editingModuleID}
             onExit={this.exitEditingMode}
             onSave={this.saveEditingMode}
-            show={this.state.editingModuleID !== null}
+            show={editingModuleID !== null}
             onPresetSelect={this.onPresetSelect}
           />
 
           {/*  SANDBOX BELOW */}
           <div>
-            {(this.state?.socket?.readyState === 1) ? welcome : 'Connecting...'}
+            {(socket?.readyState === 1) ? welcome : 'Connecting...'}
           </div>
           <div>
             {(hardware === 0) ? 'Grappe plugged-in' : 'Grappe not plugged-in'}

@@ -8,19 +8,16 @@ import { hot } from 'react-hot-loader';
 import c from '../config';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'normalize.css/normalize.css'; // eslint-disable-line import/first
-import SocketProvider, { socketProvider } from '../contexts/Socket';
 import styles from './styles.scss';
 
 type Props = { route: Object };
 
 const App = ({ route }: Props) => (
-  <SocketProvider>
-    <Grommet className={styles.App}>
-      <Helmet {...c.app} />
-      {/* Child routes won't render without this */}
-      {renderRoutes(route.routes)}
-    </Grommet>
-  </SocketProvider>
+  <Grommet className={styles.App}>
+    <Helmet {...c.app} />
+    {/* Child routes won't render without this */}
+    {renderRoutes(route.routes)}
+  </Grommet>
 );
 
 
