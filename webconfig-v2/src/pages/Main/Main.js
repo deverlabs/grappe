@@ -22,7 +22,7 @@ export class Main extends Component<Props> {
       editingModuleID: null,
       modules: [
         { title: 'Interrupteurs', type: 'DSWITCH', uiType: 'btns', desc: 'Active ou désactive un paramètre.' },
-        { title: 'Bouton poussoir', type: 'PUSHBTN', uiType: 'btn-red', desc: 'Déclenche une action.' },
+        { title: 'Bouton poussoir', type: 'PUSHBTN', uiType: 'push-btn', desc: 'Déclenche une action.' },
         { title: 'Potentiomètre', type: 'POTENTIOMETER', uiType: 'potard', desc: 'Augmente ou diminue un paramètre.' },
         { title: 'Molette', type: 'POTENTIOMETER', uiType: 'molette', desc: 'Augmente ou diminue un paramètre.' },
         { title: 'Joystick', type: 'JOYSTICK', uiType: 'btn-red', desc: 'Permet de naviguer dans toutes les directions.' },
