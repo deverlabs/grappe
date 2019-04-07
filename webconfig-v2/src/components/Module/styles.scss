@@ -18,6 +18,12 @@
 }
 
 .pad-btn {
+    img {
+        -webkit-transition: 100ms ease-in;
+        -moz-transition: 100ms ease-in;
+        -o-transition: 100ms ease-in;
+        transition: 100ms ease-in;
+    }
     margin-top: 10px;
     margin-bottom: 10px;
     margin-left: -5px;
@@ -32,6 +38,9 @@
 }
 .pad-btn:hover {
     cursor: pointer;
+    img {
+        transform: scale(1.1)
+    }
 }
 .pad-btn:before {
     top: 50%;
