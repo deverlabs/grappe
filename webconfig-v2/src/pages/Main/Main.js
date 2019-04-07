@@ -24,7 +24,7 @@ export class Main extends Component<Props> {
             { title: 'Interrupteurs', type: 'btns', desc: 'Active ou désactive un paramètre.' },
             { title: 'Bouton poussoir', type: 'btn-red', desc: 'Déclenche une action.' },
             { title: 'Potentiomètre', type: 'potard', desc: 'Augmente ou diminue un paramètre.' },
-            { title: 'Molette', type: 'molette', desc: 'Augmente ou dimunue un paramètre.' },
+            { title: 'Molette', type: 'molette', desc: 'Augmente ou diminue un paramètre.' },
             { title: 'Joystick', type: 'btn-red', desc: 'Permet de naviguer dans toutes les directions.' },
             { title: 'Capteur de présence', type: 'btn', desc: 'S\'active si une présence est détectée.' },
           ]
@@ -37,8 +37,13 @@ export class Main extends Component<Props> {
       this.setState({editingModuleID: id});
     }
 
-    exitEditingMode(id) {
+    exitEditingMode() {
       this.setState({editingModuleID: null});
+    }
+
+    saveEditingMode() {
+        this.setState({editingModuleID: null});
+        console.log('save');
     }
 
     sendToModule(object) {
@@ -114,12 +119,12 @@ export class Main extends Component<Props> {
                 </Col>
               </Row>
 
-              {this.state.editingModuleID !== null &&
                 <Editor modules={this.state.modules}
-                        id={this.state.editingModuleID}
-                        onHide={this.exitEditingMode}
+                        moduleid={this.state.editingModuleID}
+                        onExit={this.exitEditingMode}
+                        onSave={this.saveEditingMode}
+                        show={this.state.editingModuleID !== null}
                 />
-              }
 
                 {/*  SANDBOX BELOW */}
                   <div>
