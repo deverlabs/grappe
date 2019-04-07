@@ -14,6 +14,7 @@ export class Main extends Component<Props> {
   constructor(props) {
     super(props);
     this.state = {
+      debugMode: false,
       socket: null,
       welcome : null,
       hardware: null,
@@ -32,6 +33,7 @@ export class Main extends Component<Props> {
     this.editComponent = this.editComponent.bind(this);
     this.exitEditingMode = this.exitEditingMode.bind(this);
     this.saveEditingMode = this.saveEditingMode.bind(this);
+    this.toggleSandbox = this.toggleSandbox.bind(this);
   }
 
   onPresetSelect(preset) {
@@ -86,12 +88,52 @@ export class Main extends Component<Props> {
     }
   }
 
-  render() {
+  toggleSandbox() {
+    this.setState({
+      debugMode: !this.state.debugMode
+    });
+  }
+
+  renderSandbox() {
     const { welcome, hardware, modules, socket, editingModuleID, sended } = this.state;
 
     return (
+      <div>
+        <h5>0 - DSWITCH</h5>
+        <button type="button" onClick={() => this.sendToModule({ 'test' : '1:0:0' })}>Send 0 0</button>
+        <button type="button" onClick={() => this.sendToModule({ 'test' : '1:0:1' })}>Send 0 1</button>
+        <button type="button" onClick={() => this.sendToModule({ 'test' : '1:0:2' })}>Send 1 0</button>
+        <button type="button" onClick={() => this.sendToModule({ 'test' : '1:0:3' })}>Send 1 1</button>
+
+        <h5>1 - PUSHBTN</h5>
+        <button type="button" onClick={() => this.sendToModule({ 'test' : '1:1:1' })}>Send 1</button>
+
+        <h5>2 - POTENTIOMETER</h5>
+        <button type="button" onClick={() => this.sendToModule({ 'test' : '1:2:0' })}>Send +</button>
+        <button type="button" onClick={() => this.sendToModule({ 'test' : '1:2:1' })}>Send -</button>
+
+        <h5>3 - POTENTIOMETER</h5>
+        <button type="button" onClick={() => this.sendToModule({ 'test' : '1:3:0' })}>Send -</button>
+        <button type="button" onClick={() => this.sendToModule({ 'test' : '1:3:1' })}>Send +</button>
+
+        <h5>4 - JOYSTICK</h5>
+        <button type="button" onClick={() => this.sendToModule({ 'test' : '1:4:0' })}>Send haut</button>
+        <button type="button" onClick={() => this.sendToModule({ 'test' : '1:4:1' })}>Send bas</button>
+        <button type="button" onClick={() => this.sendToModule({ 'test' : '1:4:2' })}>Send gauche</button>
+        <button type="button" onClick={() => this.sendToModule({ 'test' : '1:4:3' })}>Send droite</button>
+
+        <h5>5 - PIR</h5>
+        <button type="button" onClick={() => this.sendToModule({ 'test' : '1:5:1' })}>Send présence</button>
+      </div>
+    )
+  }
+
+  render() {
+    const { welcome, hardware, modules, socket, editingModuleID, sended, debugMode } = this.state;
+
+    return (
       <Socket onMessage={(m) => this.handleMessage(m)} onSocketChange={(e) => this.socketChanged(e)}>
-        <div className={styles.headerLogo}>
+        <div role="button" onClick={this.toggleSandbox} className={styles.headerLogo}>
           <img alt="grappe logo" src="images/logo.png" />
         </div>
 
@@ -152,31 +194,7 @@ export class Main extends Component<Props> {
           </Box>
 
 
-          {/*  SANDBOX BELOW */}
-          <div>
-            {(socket?.readyState === 1) ? welcome : 'Connecting...'}
-          </div>
-          <div>
-            {(hardware === 0) ? 'Grappe plugged-in' : 'Grappe not plugged-in'}
-          </div>
-
-          <div>
-
-            <button type="button" onClick={() => this.sendToModule({ id : 1, // Change si tu veux test
-              content: { 'buttonName': 'Run facebook', // Ta capté
-                'keys': [ // Suite a executer
-                  { 'type': 'process', 'command': 'explorer https://google.fr', 'sleep': '2000' }, // Commande CMD a exec, sleep 1000ms avant la prochaine étape
-                  { 'type': 'text', 'text': 'Meteo' }, // Ecrire du texte
-                  { 'type': 'suit', 'keys': ['0x0D'] } // Faire une suite de hotkey ici seuelement enter
-                ] } })}>Pushbtn</button>
-
-            <button type="button" onClick={() => this.sendToModule({ id : 0, // Button id
-              content: { 'buttonName': 'Zoom', // Ta capté
-                'keys': [ // Suite a executer
-                  { 'type': 'suit', 'keys': ['0x11', '0:scrollDown', '1:scrollUp'] } // Commande CMD a exec, sleep 1000ms avant la prochaine étape
-                ] } })}>Update module</button>
-            <button type="button" onClick={() => this.sendToModule({ 'test' : '1:1:1' })}>Test click module</button>
-          </div>
+          {debugMode === true && this.renderSandbox()}
         </Container>
       </Socket>
     );

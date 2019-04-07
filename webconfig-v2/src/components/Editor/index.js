@@ -42,7 +42,7 @@ export class Editor extends Component<Props> {
                 'duration': 200,
                 'size': 'xlarge',
               }}>
-                <Card style={{ width: '13rem', margin: '10px', backgroundColor: '#fafafa' }} className={styles.card} onClick={() => onPresetSelect(e)}>
+                <Card style={{ minHeight: '160px', width: '13rem', margin: '10px', backgroundColor: '#fafafa' }} className={styles.card} onClick={() => onPresetSelect(e)}>
                   {/** <Card.Img variant="top" src=" /> On peut mettre une image mais flemme * */}
                   <Card.Body>
                     <Card.Title className={styles.cardTitle}>{e.buttonName}</Card.Title>
