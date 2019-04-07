@@ -2,14 +2,12 @@
 
 import React, { Component } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
-import Tooltip from '../../components/Tooltip';
-import Module from '../../components/Module';
-import Editor from '../../components/Editor';
-// import gstyles from '../../theme/global.scss';
-import Socket from '../../components/Socket';
+import { Box } from 'grommet/es6';
+import { SentAlert, Editor, Tooltip, Socket, Module } from '../../components';
 import styles from './styles.scss';
 
 type Props = { };
+
 
 export class Main extends Component<Props> {
 
@@ -20,6 +18,7 @@ export class Main extends Component<Props> {
       welcome : null,
       hardware: null,
       editingModuleID: null,
+      sended: false,
       modules: [
         { title: 'Interrupteurs', type: 'DSWITCH', uiType: 'btns', desc: 'Active ou désactive un paramètre.' },
         { title: 'Bouton poussoir', type: 'PUSHBTN', uiType: 'push-btn', desc: 'Déclenche une action.' },
@@ -38,7 +37,7 @@ export class Main extends Component<Props> {
   onPresetSelect(preset) {
     const { editingModuleID } = this.state;
     const parameterBag = {
-      id: this.state.editingModuleID,
+      id: editingModuleID,
       content: {
         'buttonName': preset.buttonName,
         'keys': preset.keys
@@ -46,7 +45,10 @@ export class Main extends Component<Props> {
     };
 
     this.sendToModule(parameterBag);
-    this.setState({ editingModuleID: null });
+    this.setState({ editingModuleID: null, sended: true });
+    setTimeout(()=> {
+      this.setState({ sended: false });
+    }, 3000);
   }
 
   editComponent(id) {
@@ -85,7 +87,7 @@ export class Main extends Component<Props> {
   }
 
   render() {
-    const { welcome, hardware, modules, socket, editingModuleID } = this.state;
+    const { welcome, hardware, modules, socket, editingModuleID, sended } = this.state;
 
     return (
       <Socket onMessage={(m) => this.handleMessage(m)} onSocketChange={(e) => this.socketChanged(e)}>
@@ -137,13 +139,18 @@ export class Main extends Component<Props> {
             </Col>
           </Row>
 
-          <Editor modules={modules}
-            moduleid={editingModuleID}
-            onExit={this.exitEditingMode}
-            onSave={this.saveEditingMode}
-            show={editingModuleID !== null}
-            onPresetSelect={this.onPresetSelect}
-          />
+          {sended ? <SentAlert/> : null}
+
+          <Box pad="medium" margin={{ 'vertical': 'large', }} background={editingModuleID !== null ? '#fff' : null}>
+            <Editor modules={modules}
+              moduleid={editingModuleID}
+              onExit={this.exitEditingMode}
+              onSave={this.saveEditingMode}
+              show={editingModuleID !== null}
+              onPresetSelect={this.onPresetSelect}
+            />
+          </Box>
+
 
           {/*  SANDBOX BELOW */}
           <div>

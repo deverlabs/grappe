@@ -142,6 +142,7 @@
     "core-js": "^3.0.1",
     "css-modules-require-hook": "^4.2.3",
     "grommet": "^2.6.5",
+    "grommet-icons": "^4.2.0",
     "helmet": "^3.16.0",
     "hpp": "^0.2.2",
     "html-minifier": "^4.0.0",

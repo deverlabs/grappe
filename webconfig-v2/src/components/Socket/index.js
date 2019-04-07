@@ -37,6 +37,7 @@ class Socket extends Component <Props>{
     const socketa = new WebSocket('ws://127.0.0.1:1234');
 
     socketa.sendMessage = (object) => {
+      console.log(object);
       this.state.socket.send(JSON.stringify({
         object
       }));

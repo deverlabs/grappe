@@ -1,0 +1,26 @@
+.editor {
+   p {
+     color : black;
+     font-size: 16px;
+   }
+  h4 {
+    color : black;
+  }
+}
+.cardTitle {
+  color: black;
+}
+
+.card:hover {
+    cursor: pointer;
+}
+.inline {
+  display: flex;
+}
+.close:hover {
+  cursor: pointer;
+}
+.close {
+  margin-top: -8px;
+  margin-left: auto;
+}
