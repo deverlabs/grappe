@@ -68,7 +68,6 @@ class VirtualKey():
         for char in suit:
             if ':' in char:
                 if int(Pos)==int(char[:1]):
-                    print(char[2:])
                     if all(c in 'xX' + string.hexdigits for c in char[2:]):
                         print("press: ", char[2:])
                         PressKey(int(char[2:], 16))
@@ -99,7 +98,6 @@ class WSHandler(tornado.websocket.WebSocketHandler):
         self.write_message(json.dumps('{"event": "connected", "message" : "Connected to Grappe v0.9"}'))
 
     def on_message(self, message):
-        print(message)
         res = json.loads(message)
         print(message)
         if 'test' in res['object']:
