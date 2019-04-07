@@ -1,0 +1,4 @@
+mouse==0.7.0
+tornado==5.1.1
+pyserial==3.4
+asyncio
