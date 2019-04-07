@@ -24,7 +24,7 @@ export default ({ pos, module, id, onClick }: Props) => {
   return (
     <div role="button" onClick={(e) => onClick(id)} className={cn([ styles['pad-btn'], styles[pos] ])} id={id}>
       <div className={styles.component}>
-        <img src={imgTypes[module.type]} alt={imgTypes[module.type]} />
+        <img src={imgTypes[module.uiType]} alt={imgTypes[module.uiType]} />
       </div>
     </div>
   );
