@@ -2,7 +2,7 @@
 
 import React, { Component } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
-import { Box } from 'grommet/es6';
+import { Box } from 'grommet';
 import { SentAlert, Editor, Tooltip, Socket, Module } from '../../components';
 import styles from './styles.scss';
 
