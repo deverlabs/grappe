@@ -40,7 +40,7 @@ export class Editor extends Component<Props> {
               <Box key={`${moduleType }__${ idx}`} animation={{
                 'type': 'zoomIn',
                 'duration': 200,
-                'size': 'large',
+                'size': 'xlarge',
               }}>
                 <Card style={{ width: '13rem', margin: '10px', backgroundColor: '#fafafa' }} className={styles.card} onClick={() => onPresetSelect(e)}>
                   {/** <Card.Img variant="top" src=" /> On peut mettre une image mais flemme * */}
