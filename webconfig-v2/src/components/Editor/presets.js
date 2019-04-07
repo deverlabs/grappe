@@ -46,12 +46,12 @@ const presets = {
     },
     {
       'buttonName': 'Skype',
-      'description': "Ouvre l'application web Skype.",
+      'description': 'Ouvre l\'application web Skype.',
       'keys': [
         { 'type': 'process', 'command': 'explorer https://web.skype.com/' },
       ]
     },
-/*    {
+    /*    {
       'buttonName': 'Email urgence',
       'description': "Envoie un email d'urgence à un contact défini.",
       'keys': [
@@ -63,7 +63,7 @@ const presets = {
         { 'type': 'keys', 'keys': ['0x09'], 'sleep': 100 },
         { 'type': 'text', 'text': 'URGENT BESOIN AIDE APPELLE MOI URGENT', 'sleep': 100 },
       ]
-    },*/
+    }, */
   ],
   'DSWITCH': [
     {

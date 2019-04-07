@@ -125,7 +125,7 @@ export class Main extends Component<Props> {
         <h5>5 - PIR</h5>
         <button type="button" onClick={() => this.sendToModule({ 'test' : '1:5:1' })}>Send présence</button>
       </div>
-    )
+    );
   }
 
   render() {
