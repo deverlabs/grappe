@@ -90,7 +90,7 @@ export class Main extends Component<Props> {
   handleMessage(data) {
     if(data?.event === 'connected') {
       this.setState({ welcome: data.message });
-    } else if(data?.event === 'ping') {
+    } else if(data?.ping) {
       this.setState({ hardware: data.event.ping });
     }
   }
