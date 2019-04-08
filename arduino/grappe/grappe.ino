@@ -3,6 +3,7 @@
 
 String eventString = "";         // a String to hold incoming data
 bool eventReceived = false;  // whether the string is complete
+bool warmedUp = false;
 
 #define EVENT_SET_LABEL 1
 #define ENABLE_DISPLAYS true
@@ -43,10 +44,12 @@ void loop() {
   /** Poll Values **/
   for(uint8_t i = 0; i < SLOTS_TOTAL; i++) {
     if(componentPollValues(i)) {
-      serialSendChangeEvent(i, componentLastValue(i));
+      if(warmedUp) {
+        serialSendChangeEvent(i, componentLastValue(i));
+      }
     }
   }
-
+  warmedUp = true;
   delay(100);
 }
 

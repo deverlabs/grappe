@@ -16,7 +16,7 @@ void serialSendReadyEvent() {
 
 void serialEventAck(bool isAck) {
   if(isAck) {
-    Serial.println(F("0:event-ack"));
+    //Serial.println(F("0:event-ack"));
   } else {
     Serial.println(F("0:event-nack"));
   }
