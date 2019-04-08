@@ -71,7 +71,7 @@ const presets = {
       'description': 'Activez rapidement le mode muet.',
       'keys': [{
         'type': 'suit',
-        'keys': ['1:0xAD']
+        'keys': ['0xAD']
       }]
     }
   ],
@@ -81,7 +81,7 @@ const presets = {
       'description': 'Utilisez ce composant pour agrandir ou rétrécir le contenu.',
       'keys': [{
         'type': 'suit',
-        'keys': ['0x11', '0:scrollDown', '1:scrollUp']
+        'keys': ['0x11', '1:scrollDown', '0:scrollUp']
       }]
     },
     {
