@@ -99,7 +99,7 @@ const presets = {
       'description': 'Simule les flêches directionnelles du clavier.',
       'keys': [{
         'type': 'suit',
-        'keys': ['0:0x26', '1:0x28', '2:0x25', '3:0x2']
+        'keys': ['0:0x26', '1:0x28', '2:0x25', '3:0x27']
       }]
     },
   ],
