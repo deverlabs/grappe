@@ -1,7 +1,7 @@
 /* @flow */
 
 import React, { Component } from 'react';
-import { Container, Row, Col } from 'react-bootstrap';
+import { Container, Row, Col, Button } from 'react-bootstrap';
 import { Box } from 'grommet';
 import { SentAlert, Editor, Tooltip, Socket, Module } from '../../components';
 import styles from './styles.scss';
@@ -37,7 +37,7 @@ export class Main extends Component<Props> {
   }
 
   onPresetSelect(preset) {
-    const { editingModuleID } = this.state;
+    const { editingModuleID, modules } = this.state;
     const parameterBag = {
       id: editingModuleID,
       content: {
@@ -47,7 +47,14 @@ export class Main extends Component<Props> {
     };
 
     this.sendToModule(parameterBag);
-    this.setState({ editingModuleID: null, sended: true });
+
+    modules[editingModuleID].desc = preset.buttonName;
+
+    this.setState({
+        editingModuleID: null,
+        sended: true,
+        modules: modules
+    });
     setTimeout(()=> {
       this.setState({ sended: false });
     }, 3000);
@@ -133,8 +140,10 @@ export class Main extends Component<Props> {
 
     return (
       <Socket onMessage={(m) => this.handleMessage(m)} onSocketChange={(e) => this.socketChanged(e)}>
-        <div role="button" onClick={this.toggleSandbox} className={styles.headerLogo}>
-          <img alt="grappe logo" src="images/logo.png" />
+        <div style={{height: '75px', display: 'flex', justifyContent: 'space-between'}} className={styles.headerLogo}>
+            <div style={{width: '131px'}}></div>
+            <img role="button" onClick={this.toggleSandbox} alt="grappe logo" src="images/logo.png" />
+            <Button size="sm" variant="outline-secondary">Contrôle à distance</Button>
         </div>
 
         <Container>
