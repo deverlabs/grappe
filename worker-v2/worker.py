@@ -179,8 +179,8 @@ class Manager(Thread):
             if content[0] is not "0" and content[1] is not "ready-event":
                 if Grappe.getComponent(int(content[1])) is not 0:
                     return Grappe.runComponent(int(content[1]), int(content[2]))
-        elif content[1] == "4":
-            print("joy")
+                else:
+                    writeToClient(json.dumps('{"event": "moved", "message" : '+str(content[1])+'}'))
 
 
 

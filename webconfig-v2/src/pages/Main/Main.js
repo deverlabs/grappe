@@ -20,6 +20,7 @@ export class Main extends Component<Props> {
       hardware: null,
       editingModuleID: null,
       sended: false,
+      moved: null,
       modules: [
         { title: 'Interrupteurs', type: 'DSWITCH', uiType: 'btns', desc: 'Active ou désactive un paramètre.' },
         { title: 'Bouton poussoir', type: 'PUSHBTN', uiType: 'push-btn', desc: 'Déclenche une action.' },
@@ -51,9 +52,9 @@ export class Main extends Component<Props> {
     modules[editingModuleID].desc = preset.buttonName;
 
     this.setState({
-        editingModuleID: null,
-        sended: true,
-        modules: modules
+      editingModuleID: null,
+      sended: true,
+      modules
     });
     setTimeout(()=> {
       this.setState({ sended: false });
@@ -88,11 +89,18 @@ export class Main extends Component<Props> {
   }
 
   handleMessage(data) {
+    console.log(data);
     if(data?.event === 'connected') {
       this.setState({ welcome: data.message });
     } else if(data?.event === 'ping') {
       this.setState({ hardware: data.message });
+    } else if(data?.event === 'moved') {
+      this.setState({ moved: data.message });
+      setTimeout(()=> {
+        this.setState({ moved: null });
+      }, 1000);
     }
+
   }
 
   toggleSandbox() {
@@ -136,7 +144,7 @@ export class Main extends Component<Props> {
   }
 
   render() {
-    const { welcome, hardware, modules, socket, editingModuleID, sended, debugMode } = this.state;
+    const { welcome, hardware, modules, socket, editingModuleID, sended, debugMode, moved } = this.state;
 
     return (
       <Socket onMessage={(m) => this.handleMessage(m)} onSocketChange={(e) => this.socketChanged(e)}>
@@ -156,9 +164,9 @@ export class Main extends Component<Props> {
             <Col xs={6} className={styles['pad-core']}>
               <Row>
                 <Col xs={4}>
-                  <Module module={modules[4]} pos="left" id="4" onClick={this.editComponent}/>
-                  <Module module={modules[2]} pos="left" id="2" onClick={this.editComponent}/>
-                  <Module module={modules[0]} pos="left" id="0" onClick={this.editComponent}/>
+                  <Module moved={moved === 4} module={modules[4]} pos="left" id="4" onClick={this.editComponent}/>
+                  <Module moved={moved === 2} module={modules[2]} pos="left" id="2" onClick={this.editComponent}/>
+                  <Module moved={moved === 0} module={modules[0]} pos="left" id="0" onClick={this.editComponent}/>
                 </Col>
 
                 <Col xs={4}>
@@ -177,9 +185,9 @@ export class Main extends Component<Props> {
                 </Col>
 
                 <Col xs={4}>
-                  <Module module={modules[5]} pos="right" id="5" onClick={this.editComponent}/>
-                  <Module module={modules[3]} pos="right" id="3" onClick={this.editComponent}/>
-                  <Module module={modules[1]} pos="right" id="1" onClick={this.editComponent}/>
+                  <Module moved={moved === 5} module={modules[5]} pos="right" id="5" onClick={this.editComponent}/>
+                  <Module moved={moved === 3} module={modules[3]} pos="right" id="3" onClick={this.editComponent}/>
+                  <Module moved={moved === 1} module={modules[1]} pos="right" id="1" onClick={this.editComponent}/>
                 </Col>
               </Row>
             </Col>
