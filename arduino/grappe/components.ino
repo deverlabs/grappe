@@ -53,7 +53,7 @@ bool componentPollValues(uint8_t slot) {
     {
       old = values[slot];
       values[slot] = digitalRead(pgm_read_byte(&SLOTS_PINS[slot][0]));
-      if(values[slot] != old) { hasChanged = true; }
+      if(values[slot] != old && values[slot] != 0) { hasChanged = true; }
       break;
     }
 
