@@ -90,8 +90,8 @@ export class Main extends Component<Props> {
   handleMessage(data) {
     if(data?.event === 'connected') {
       this.setState({ welcome: data.message });
-    } else if(data?.ping) {
-      this.setState({ hardware: data.event.ping });
+    } else if(data?.event === 'ping') {
+      this.setState({ hardware: data.message });
     }
   }
 
@@ -140,10 +140,10 @@ export class Main extends Component<Props> {
 
     return (
       <Socket onMessage={(m) => this.handleMessage(m)} onSocketChange={(e) => this.socketChanged(e)}>
-        <div style={{height: '75px', display: 'flex', justifyContent: 'space-between'}} className={styles.headerLogo}>
-            <div style={{width: '131px'}}></div>
-            <img role="button" onClick={this.toggleSandbox} alt="grappe logo" src="images/logo.png" />
-            <Button size="sm" variant="outline-secondary">Contrôle à distance</Button>
+        <div style={{ height: '75px', display: 'flex', justifyContent: 'space-between' }} className={styles.headerLogo}>
+          <div style={{ width: '131px' }}></div>
+          <img role="button" onClick={this.toggleSandbox} alt="grappe logo" src="images/logo.png" />
+          <Button size="sm" variant="outline-secondary">Contrôle à distance</Button>
         </div>
 
         <Container>
@@ -165,13 +165,13 @@ export class Main extends Component<Props> {
                   <div className={styles['pad-center']}>
                     <div className={styles['pad-logo']}>
                       <div className={styles.logo} id="logo-status">
-                        {(socket?.readyState === 1) ? <img src="images/logo-stand-orange.png" alt="connected"/> : <img className={styles.glow} src="images/logo-stand.png" alt="searching"/>}
+                        {(hardware === 1 && socket.readyState === 1) ? <img src="images/logo-stand-orange.png" alt="connected"/> : <img className={styles.glow} src="images/logo-stand.png" alt="searching"/>}
                       </div>
                     </div>
                     <div className={ styles.status }>
                       {(socket?.readyState === 1) ? <span className={styles['socket-status_connected']}>{welcome}</span> : <span className={styles['socket-status_searching']}>Looking for a Grappe ...</span>}
                       <br />
-                      {(hardware === 0) ? 'Grappe plugged-in' : 'Grappe not plugged-in'}
+                      {(hardware === 1 && socket.readyState === 1) ? 'Grappe ready to use !' : 'Grappe not plugged-in'}
                     </div>
                   </div>
                 </Col>
