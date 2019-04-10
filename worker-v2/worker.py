@@ -6,7 +6,7 @@ import sys
 import time
 from ctypes import windll
 from threading import Thread
-
+import unidecode
 import mouse
 import serial
 import serial.tools.list_ports
@@ -109,6 +109,7 @@ class WSHandler(tornado.websocket.WebSocketHandler):
             event = res['object']['test']
             Grappe.runComponent(int(event[2]), (int(event[4])))
             return
+        Grappe.printSerial('1:'+res['object']['id']+':'+unidecode.unidecode(res['object']['content']['buttonName']))
         Grappe.updateComponent(int(res['object']['id']), res['object']['content'])
 
 
@@ -209,10 +210,9 @@ class Manager(Thread):
                     serialString = serialPort.readline()
                     PING_SENDED = False
                     if INIT is None:
-                        print("init")
+                        print("Init Grappe")
                         INIT = True
                         writeToClient(json.dumps('{"event": "ping", "message" : 1}'))
-                    print(serialString.decode("utf-8"))
                     Grappe.handleIncoming(serialString.decode("utf-8"))
         except:
             # print("Can't connect to serial")
