@@ -1,90 +1,98 @@
 .component {
-    position: relative;
-    height: 100%;
+  position: relative;
+  height: 100%;
 }
 
 .component img {
-    display: block;
-    height: 100%;
-    width: auto;
-    max-height: 80px;
-    max-width: 100%;
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    margin: auto;
+  display: block;
+  height: 100%;
+  width: auto;
+  max-height: 80px;
+  max-width: 100%;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
 }
 
 .pad-btn {
-    img {
-        -webkit-transition: 100ms ease-in;
-        -moz-transition: 100ms ease-in;
-        -o-transition: 100ms ease-in;
-        transition: 100ms ease-in;
-    }
-    margin-top: 10px;
-    margin-bottom: 10px;
-    margin-left: -5px;
-    margin-right: -5px;
-    background-color: #444;
-    height: 100px;
-    color: whitesmoke;
-    border: 0.1rem solid #555;
-    border-radius: 5px;
-    padding: 15px;
-    position: relative;
+  img {
+    -webkit-transition: 1000ms ease-in;
+    -moz-transition: 1000ms ease-in;
+    -o-transition: 1000ms ease-in;
+    transition: 1000ms ease-in;
+  }
+
+  margin-top: 10px;
+  margin-bottom: 10px;
+  margin-left: -5px;
+  margin-right: -5px;
+  background-color: #444;
+  height: 100px;
+  color: whitesmoke;
+  border: 0.1rem solid #555;
+  border-radius: 5px;
+  padding: 15px;
+  position: relative;
 }
+
 .pad-btn:hover {
-    cursor: pointer;
-    img {
-        transform: scale(1.1)
-    }
+  cursor: pointer;
+
+  img {
+    transform: scale(1.1)
+  }
 }
+
 .pad-btn:before {
-    top: 50%;
-    margin-top: -3px;
-    padding: 0;
-    position: absolute;
-    content: '';
-    display: inline-block;
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background-color: #fff;
+  top: 50%;
+  margin-top: -3px;
+  padding: 0;
+  position: absolute;
+  content: '';
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #fff;
 }
 
 .pad-btn:after {
-    top: 50%;
-    margin-top: -35px;
-    padding: 0;
-    position: absolute;
-    content: '';
-    display: inline-block;
-    width: 8px;
-    height: 70px;
-    background-color: #333;
-    z-index: 2;
+  top: 50%;
+  margin-top: -35px;
+  padding: 0;
+  position: absolute;
+  content: '';
+  display: inline-block;
+  width: 8px;
+  height: 70px;
+  background-color: #333;
+  z-index: 2;
 }
 
 .pad-btn.left:after {
-    right: -16px
+  right: -16px
 }
 
 .pad-btn.right:after {
-    left: -16px
+  left: -16px
 }
 
 
 .pad-btn.left:before {
-    left: 4px
+  left: 4px
 }
 
 .pad-btn.right:before {
-   right: 4px
+  right: 4px
 }
 
 .componentMoved img {
--webkit-filter: drop-shadow(0 0 15px #eee)
+  -webkit-filter: drop-shadow(0 0 15px #eee);
+  -webkit-transition: 100ms ease-in;
+  -moz-transition: 100ms ease-in;
+  -o-transition: 100ms ease-in;
+  transition: 100ms ease-in;
 }

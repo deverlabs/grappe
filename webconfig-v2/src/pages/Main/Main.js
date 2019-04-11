@@ -35,6 +35,7 @@ export class Main extends Component<Props> {
     this.exitEditingMode = this.exitEditingMode.bind(this);
     this.saveEditingMode = this.saveEditingMode.bind(this);
     this.toggleSandbox = this.toggleSandbox.bind(this);
+    this.lastMoved = new Date();
   }
 
   onPresetSelect(preset) {
@@ -89,15 +90,25 @@ export class Main extends Component<Props> {
   }
 
   handleMessage(data) {
-    console.log(data);
+    const { lastMoved } = this;
+
     if(data?.event === 'connected') {
       this.setState({ welcome: data.message });
     } else if(data?.event === 'ping') {
       this.setState({ hardware: data.message });
     } else if(data?.event === 'moved') {
+      this.lastMoved = new Date();
       this.setState({ moved: data.message });
+      const da= new Date();
       setTimeout(()=> {
+
+        const diff = (da.getTime() - lastMoved.getTime());
         this.setState({ moved: null });
+        console.log(diff);
+        if(diff > 1500){
+
+        }
+
       }, 1000);
     }
 
