@@ -6,11 +6,12 @@ import sys
 import time
 from ctypes import windll
 from threading import Thread
-
+import unidecode
 import mouse
 import serial
 import serial.tools.list_ports
 import tornado.httpserver
+from tornado.platform.asyncio import AnyThreadEventLoopPolicy
 import tornado.ioloop
 import tornado.options
 import tornado.web
@@ -20,7 +21,7 @@ import tornado.websocket
 from keyboard import *
 
 serialPort = None
-INIT = None
+INITIALIZED = False
 CLIENT_CONNECTED = False
 CLIENT = None
 PING_SENDED = False
@@ -33,14 +34,13 @@ def resetVars():
     CLIENT = None
     CLIENT_CONNECTED = False
 
-
 def writeToClient(message):
     global CLIENT
     if CLIENT is not None:
-        print("send to cli")
-        asyncio.set_event_loop(asyncio.new_event_loop())
-        return CLIENT.write_message(message)
-        # asyncio.get_event_loop().stop()
+        print("Write to client")
+        CLIENT.write_message(message)
+
+
 
 
 class VirtualKey():
@@ -96,15 +96,21 @@ class WSHandler(tornado.websocket.WebSocketHandler):
         CLIENT = self
         print('new connection')
         self.write_message(json.dumps('{"event": "connected", "message" : "Connected to Grappe v0.9"}'))
+        self.write_message(json.dumps('{"event": "config", "message" : '+json.dumps(Grappe.getComponents())+'}'))
+        if INITIALIZED:
+            self.write_message(json.dumps('{"event": "ping", "message" : 1}'))
 
     def on_message(self, message):
         res = json.loads(message)
         print(message)
         if 'test' in res['object']:
-             event = res['object']['test']
-             Grappe.runComponent(int(event[2]), bool(int(event[4])))
-             return
+            event = res['object']['test']
+            Grappe.runComponent(int(event[2]), (int(event[4])))
+            return
+        if int(res['object']['id']) < 4:
+           Grappe.printSerial('1:'+res['object']['id']+':'+unidecode.unidecode(res['object']['content']['buttonName']).upper())
         Grappe.updateComponent(int(res['object']['id']), res['object']['content'])
+
 
     def on_close(self):
         global CLIENT_CONNECTED, CLIENT
@@ -123,6 +129,7 @@ class SocketServer(Thread):
 
     def run(self):
         try:
+            asyncio.set_event_loop_policy(AnyThreadEventLoopPolicy())
             asyncio.set_event_loop(asyncio.new_event_loop())
             http_server = tornado.httpserver.HTTPServer(self.app)
             http_server.listen(self.port)
@@ -141,9 +148,12 @@ class Manager(Thread):
 
     def getComponent(self, id):
         return self.pad[id]
+    def getComponents(self):
+        return self.pad
 
     def runComponent(self, id, pos=None):
         Keyboard = VirtualKey()
+        print("run")
         for key, config in dict.items((Grappe.getComponent(id))):
             if key == "buttonName":
                 print("Component triggered: ", config)
@@ -154,60 +164,60 @@ class Manager(Thread):
                         if object["type"] == "suit":
                             Keyboard.Hotkey(object["keys"], pos)
                         elif object["type"] == "text":
-                             Keyboard.Write(object["text"])
+                            Keyboard.Write(object["text"])
                         elif object["type"] == "process":
-                             Keyboard.Process(object["command"])
+                            Keyboard.Process(object["command"])
                         if "sleep" in object:
                             print("sleep")
                             time.sleep(int(object["sleep"])/1000)
-                        else:
-                            time.sleep(0.6)
+
 
     def handleIncoming(self, data):
-        Keyboard = VirtualKey()
-        content = data.rstrip("\r\n").split(":")
-        if content[0] == "0" and content[1] == "ready-event":
-            return self.printSerial("1:0:coucou")
-        elif content[1] == "1" and content[2] == "1":
-            return self.runComponent(1, content["3"])
-        elif content[1] == "4":
-            print("joy")
-            if content[2] == "0":
-                Keyboard.Write(["0x26"])
-            if content[2] == "1":
-                Keyboard.Write(["0x28"])
-            if content[2] == "2":
-                Keyboard.Write(["0x25"])
-            if content[2] == "3":
-                Keyboard.Write(["0x27"])
+        try:
+            content = data.rstrip("\r\n").split(":")
+            print(content)
+            if content[0] is not "0" and content[1] is not "ready-event":
+                if Grappe.getComponent(int(content[1])) is not 0:
+                    return Grappe.runComponent(int(content[1]), int(content[2]))
+                else:
+                    writeToClient(json.dumps('{"event": "moved", "message" : '+str(content[1])+'}'))
+
+
+
+        except Exception as e:
+            print(str(e))
+
+
 
     def printSerial(self, message):
         return serialPort.write(str.encode(str(message) + "\n"))
 
     def run(self, err=False):
-        global INIT, serialPort, PING_SENDED
+        global INITIALIZED, serialPort, PING_SENDED
         if err:
             time.sleep(1)
         try:
-            serialPort = serial.Serial(port="COM5", baudrate=115200, bytesize=8, timeout=2,
+            selected_port = None
+            for port in serial.tools.list_ports.comports():
+                selected_port=port.device
+            serialPort = serial.Serial(port=selected_port, baudrate=115200, bytesize=8, timeout=2,
                                        stopbits=serial.STOPBITS_ONE)
-            serialString = ""
-            writeToClient(json.dumps('{"ping": 1}'))
 
-            while (True):
-                if (serialPort.in_waiting > 0):
+            while True:
+                if serialPort.in_waiting > 0:
                     serialString = serialPort.readline()
-                    if INIT is None:
-                        print("init")
-                        INIT = True
-
+                    PING_SENDED = False
+                    if not INITIALIZED:
+                        print("Init Grappe")
+                        INITIALIZED = True
+                        writeToClient(json.dumps('{"event": "ping", "message" : 1}'))
                     Grappe.handleIncoming(serialString.decode("utf-8"))
         except:
-            # print("Can't connect to serial")
+            INITIALIZED = False
             if PING_SENDED is not True:
                 if CLIENT is not None:
                     PING_SENDED = True
-                writeToClient(json.dumps('{"ping": 0}'))
+                writeToClient(json.dumps('{"event": "ping", "message" : 0}'))
             return self.run(True)
 
 
@@ -217,8 +227,6 @@ if __name__ == "__main__":
         Grappe.start()
         Socket = SocketServer("localhost", 1234)
         Socket.start()
-
-
 
     except KeyboardInterrupt:
         print('Interrupted')

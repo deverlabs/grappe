@@ -20,6 +20,7 @@ export class Main extends Component<Props> {
       hardware: null,
       editingModuleID: null,
       sended: false,
+      moved: null,
       modules: [
         { title: 'Interrupteurs', type: 'DSWITCH', uiType: 'btns', desc: 'Active ou désactive un paramètre.' },
         { title: 'Bouton poussoir', type: 'PUSHBTN', uiType: 'push-btn', desc: 'Déclenche une action.' },
@@ -34,6 +35,7 @@ export class Main extends Component<Props> {
     this.exitEditingMode = this.exitEditingMode.bind(this);
     this.saveEditingMode = this.saveEditingMode.bind(this);
     this.toggleSandbox = this.toggleSandbox.bind(this);
+    this.lastMoved = new Date();
   }
 
   onPresetSelect(preset) {
@@ -51,9 +53,9 @@ export class Main extends Component<Props> {
     modules[editingModuleID].desc = preset.buttonName;
 
     this.setState({
-        editingModuleID: null,
-        sended: true,
-        modules: modules
+      editingModuleID: null,
+      sended: true,
+      modules
     });
     setTimeout(()=> {
       this.setState({ sended: false });
@@ -88,11 +90,28 @@ export class Main extends Component<Props> {
   }
 
   handleMessage(data) {
+    const { lastMoved } = this;
+
     if(data?.event === 'connected') {
       this.setState({ welcome: data.message });
-    } else if(data?.ping) {
-      this.setState({ hardware: data.event.ping });
+    } else if(data?.event === 'ping') {
+      this.setState({ hardware: data.message });
+    } else if(data?.event === 'moved') {
+      this.lastMoved = new Date();
+      this.setState({ moved: data.message });
+      const da= new Date();
+      setTimeout(()=> {
+
+        const diff = (da.getTime() - lastMoved.getTime());
+        this.setState({ moved: null });
+        console.log(diff);
+        if(diff > 1500){
+
+        }
+
+      }, 1000);
     }
+
   }
 
   toggleSandbox() {
@@ -136,14 +155,14 @@ export class Main extends Component<Props> {
   }
 
   render() {
-    const { welcome, hardware, modules, socket, editingModuleID, sended, debugMode } = this.state;
+    const { welcome, hardware, modules, socket, editingModuleID, sended, debugMode, moved } = this.state;
 
     return (
       <Socket onMessage={(m) => this.handleMessage(m)} onSocketChange={(e) => this.socketChanged(e)}>
-        <div style={{height: '75px', display: 'flex', justifyContent: 'space-between'}} className={styles.headerLogo}>
-            <div style={{width: '131px'}}></div>
-            <img role="button" onClick={this.toggleSandbox} alt="grappe logo" src="images/logo.png" />
-            <Button size="sm" variant="outline-secondary">Contrôle à distance</Button>
+        <div style={{ height: '75px', display: 'flex', justifyContent: 'space-between' }} className={styles.headerLogo}>
+          <div style={{ width: '131px' }}></div>
+          <img role="button" onClick={this.toggleSandbox} alt="grappe logo" src="images/logo.png" />
+          <Button size="sm" variant="outline-secondary">Contrôle à distance</Button>
         </div>
 
         <Container>
@@ -156,30 +175,30 @@ export class Main extends Component<Props> {
             <Col xs={6} className={styles['pad-core']}>
               <Row>
                 <Col xs={4}>
-                  <Module module={modules[4]} pos="left" id="4" onClick={this.editComponent}/>
-                  <Module module={modules[2]} pos="left" id="2" onClick={this.editComponent}/>
-                  <Module module={modules[0]} pos="left" id="0" onClick={this.editComponent}/>
+                  <Module moved={moved === 4} module={modules[4]} pos="left" id="4" onClick={this.editComponent}/>
+                  <Module moved={moved === 2} module={modules[2]} pos="left" id="2" onClick={this.editComponent}/>
+                  <Module moved={moved === 0} module={modules[0]} pos="left" id="0" onClick={this.editComponent}/>
                 </Col>
 
                 <Col xs={4}>
                   <div className={styles['pad-center']}>
                     <div className={styles['pad-logo']}>
                       <div className={styles.logo} id="logo-status">
-                        {(socket?.readyState === 1) ? <img src="images/logo-stand-orange.png" alt="connected"/> : <img className={styles.glow} src="images/logo-stand.png" alt="searching"/>}
+                        {(hardware === 1 && socket.readyState === 1) ? <img src="images/logo-stand-orange.png" alt="connected"/> : <img className={styles.glow} src="images/logo-stand.png" alt="searching"/>}
                       </div>
                     </div>
                     <div className={ styles.status }>
                       {(socket?.readyState === 1) ? <span className={styles['socket-status_connected']}>{welcome}</span> : <span className={styles['socket-status_searching']}>Looking for a Grappe ...</span>}
                       <br />
-                      {(hardware === 0) ? 'Grappe plugged-in' : 'Grappe not plugged-in'}
+                      {(hardware === 1 && socket.readyState === 1) ? 'Grappe ready to use !' : 'Grappe not plugged-in'}
                     </div>
                   </div>
                 </Col>
 
                 <Col xs={4}>
-                  <Module module={modules[5]} pos="right" id="5" onClick={this.editComponent}/>
-                  <Module module={modules[3]} pos="right" id="3" onClick={this.editComponent}/>
-                  <Module module={modules[1]} pos="right" id="1" onClick={this.editComponent}/>
+                  <Module moved={moved === 5} module={modules[5]} pos="right" id="5" onClick={this.editComponent}/>
+                  <Module moved={moved === 3} module={modules[3]} pos="right" id="3" onClick={this.editComponent}/>
+                  <Module moved={moved === 1} module={modules[1]} pos="right" id="1" onClick={this.editComponent}/>
                 </Col>
               </Row>
             </Col>

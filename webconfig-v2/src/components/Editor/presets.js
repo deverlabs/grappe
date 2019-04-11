@@ -38,6 +38,13 @@ const presets = {
       ]
     },
     {
+      'buttonName': 'Spotify',
+      'description': 'Ouvre l\'application spotify.',
+      'keys': [
+        { 'type': 'process', 'command': 'start C:\\Users\\xD3CODER\\AppData\\Roaming\\Spotify\\Spotify.exe' },
+      ]
+    },
+    {
       'buttonName': 'Touche arobase',
       'description': 'Entre un arobase dans la zone de texte.',
       'keys': [

@@ -8,10 +8,11 @@ type Props = {
     pos: 'left' | 'right',
     module: Object,
     id: Number,
-    onClick: Function
+    onClick: Function,
+    moved: Boolean
 };
 
-export default ({ pos, module, id, onClick }: Props) => {
+export default ({ pos, module, id, onClick, moved }: Props) => {
   const imgTypes = {
     'btn-red': 'images/comps/btn-red.png',
     'btn': 'images/comps/btn.png',
@@ -23,7 +24,7 @@ export default ({ pos, module, id, onClick }: Props) => {
 
   return (
     <div role="button" onClick={(e) => onClick(id)} className={cn([ styles['pad-btn'], styles[pos] ])} id={id}>
-      <div className={styles.component}>
+      <div className={cn(styles.component, moved ? styles.componentMoved: null)}>
         <img src={imgTypes[module.uiType]} alt={imgTypes[module.uiType]} />
       </div>
     </div>
