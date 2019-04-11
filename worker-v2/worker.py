@@ -11,6 +11,7 @@ import mouse
 import serial
 import serial.tools.list_ports
 import tornado.httpserver
+from tornado.platform.asyncio import AnyThreadEventLoopPolicy
 import tornado.ioloop
 import tornado.options
 import tornado.web
@@ -20,7 +21,7 @@ import tornado.websocket
 from keyboard import *
 
 serialPort = None
-INIT = None
+INITIALIZED = False
 CLIENT_CONNECTED = False
 CLIENT = None
 PING_SENDED = False
@@ -33,15 +34,12 @@ def resetVars():
     CLIENT = None
     CLIENT_CONNECTED = False
 
-
 def writeToClient(message):
     global CLIENT
     if CLIENT is not None:
         print("Write to client")
-        asyncio.set_event_loop(asyncio.new_event_loop())
-
         CLIENT.write_message(message)
-        return asyncio.get_event_loop().stop()
+
 
 
 
@@ -99,7 +97,7 @@ class WSHandler(tornado.websocket.WebSocketHandler):
         print('new connection')
         self.write_message(json.dumps('{"event": "connected", "message" : "Connected to Grappe v0.9"}'))
         self.write_message(json.dumps('{"event": "config", "message" : '+json.dumps(Grappe.getComponents())+'}'))
-        if INIT is not None:
+        if INITIALIZED:
             self.write_message(json.dumps('{"event": "ping", "message" : 1}'))
 
     def on_message(self, message):
@@ -109,7 +107,8 @@ class WSHandler(tornado.websocket.WebSocketHandler):
             event = res['object']['test']
             Grappe.runComponent(int(event[2]), (int(event[4])))
             return
-        Grappe.printSerial('1:'+res['object']['id']+':'+unidecode.unidecode(res['object']['content']['buttonName']))
+        if int(res['object']['id']) < 4:
+           Grappe.printSerial('1:'+res['object']['id']+':'+unidecode.unidecode(res['object']['content']['buttonName']).upper())
         Grappe.updateComponent(int(res['object']['id']), res['object']['content'])
 
 
@@ -130,6 +129,7 @@ class SocketServer(Thread):
 
     def run(self):
         try:
+            asyncio.set_event_loop_policy(AnyThreadEventLoopPolicy())
             asyncio.set_event_loop(asyncio.new_event_loop())
             http_server = tornado.httpserver.HTTPServer(self.app)
             http_server.listen(self.port)
@@ -174,7 +174,6 @@ class Manager(Thread):
 
     def handleIncoming(self, data):
         try:
-            Keyboard = VirtualKey()
             content = data.rstrip("\r\n").split(":")
             print(content)
             if content[0] is not "0" and content[1] is not "ready-event":
@@ -194,7 +193,7 @@ class Manager(Thread):
         return serialPort.write(str.encode(str(message) + "\n"))
 
     def run(self, err=False):
-        global INIT, serialPort, PING_SENDED
+        global INITIALIZED, serialPort, PING_SENDED
         if err:
             time.sleep(1)
         try:
@@ -203,20 +202,18 @@ class Manager(Thread):
                 selected_port=port.device
             serialPort = serial.Serial(port=selected_port, baudrate=115200, bytesize=8, timeout=2,
                                        stopbits=serial.STOPBITS_ONE)
-            serialString = ""
 
-            while (True):
-                if (serialPort.in_waiting > 0):
+            while True:
+                if serialPort.in_waiting > 0:
                     serialString = serialPort.readline()
                     PING_SENDED = False
-                    if INIT is None:
+                    if not INITIALIZED:
                         print("Init Grappe")
-                        INIT = True
+                        INITIALIZED = True
                         writeToClient(json.dumps('{"event": "ping", "message" : 1}'))
                     Grappe.handleIncoming(serialString.decode("utf-8"))
         except:
-            # print("Can't connect to serial")
-            INIT = None
+            INITIALIZED = False
             if PING_SENDED is not True:
                 if CLIENT is not None:
                     PING_SENDED = True
@@ -230,8 +227,6 @@ if __name__ == "__main__":
         Grappe.start()
         Socket = SocketServer("localhost", 1234)
         Socket.start()
-
-
 
     except KeyboardInterrupt:
         print('Interrupted')
