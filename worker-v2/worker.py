@@ -108,7 +108,7 @@ class WSHandler(tornado.websocket.WebSocketHandler):
             Grappe.runComponent(int(event[2]), (int(event[4])))
             return
         if int(res['object']['id']) < 4:
-           Grappe.printSerial('1:'+res['object']['id']+':'+unidecode.unidecode(res['object']['content']['buttonName']).upper())
+           Grappe.printSerial('1:'+res['object']['id']+':'+unidecode.unidecode(res['object']['content']['buttonName'])[:14].upper())
         Grappe.updateComponent(int(res['object']['id']), res['object']['content'])
 
 
