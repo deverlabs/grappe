@@ -4,10 +4,8 @@ import os
 import string
 import sys
 import time
-from ctypes import windll
 from threading import Thread
 import unidecode
-import mouse
 import serial
 import serial.tools.list_ports
 import tornado.httpserver
@@ -17,8 +15,10 @@ import tornado.options
 import tornado.web
 import tornado.web
 import tornado.websocket
+import pyautogui
+from jskey import keyCodes
 
-from keyboard import *
+pyautogui.PAUSE = 0
 
 serialPort = None
 INITIALIZED = False
@@ -44,23 +44,17 @@ def writeToClient(message):
 
 
 class VirtualKey():
-    def char2key(self, c):
-        result = windll.User32.VkKeyScanW(ord(str(c)))
-        return hex(result)
 
     def Write(self, text):
-        for char in text:
-            hexchar = self.char2key(char)
-            PressKey(int(hexchar, 16))
-            ReleaseKey(int(hexchar, 16))
+        pyautogui.typewrite(text)
 
     def Process(self, command):
         return os.popen(command)
     def mouseAction(self, action_type):
         if action_type == "scrollUp":
-            return mouse.wheel(1)
+            return pyautogui.scroll(30)
         elif action_type == "scrollDown":
-            return mouse.wheel(-1)
+            return pyautogui.scroll(-30)
         else:
             return
 
@@ -69,20 +63,21 @@ class VirtualKey():
             if ':' in char:
                 if int(Pos)==int(char[:1]):
                     if all(c in 'xX' + string.hexdigits for c in char[2:]):
-                        print("press: ", char[2:])
-                        PressKey(int(char[2:], 16))
+                        print("Hexa code: ", char[2:], "Converted: ",keyCodes[int(char[2:], 0)] )
+                        pyautogui.keyDown(keyCodes[int(char[2:], 0)])
                     else:
                         self.mouseAction(char[2:])
             if all(c in 'xX' + string.hexdigits for c in char):
-                PressKey(int(char, 16))
+                print(keyCodes[int(char, 0)])
+                pyautogui.keyDown(keyCodes[int(char, 0)])
 
         for char in reversed(suit):
             if ':' in char:
                 if int(Pos)==int(char[:1]):
                     if all(c in 'xX' + string.hexdigits for c in char):
-                        ReleaseKey(int(char, 16))
+                        pyautogui.keyUp(keyCodes[int(char, 0)])
             if all(c in 'xX' + string.hexdigits for c in char):
-                ReleaseKey(int(char, 16))
+                pyautogui.keyUp(keyCodes[int(char, 0)])
 
 
 
@@ -142,6 +137,7 @@ class Manager(Thread):
     def __init__(self):
         self.pad = [0] * 6
         Thread.__init__(self)
+
 
     def updateComponent(self, id, content):
         self.pad[id] = content
@@ -223,6 +219,7 @@ class Manager(Thread):
 
 if __name__ == "__main__":
     try:
+        print("Grappe Worker successfully started")
         Grappe = Manager()
         Grappe.start()
         Socket = SocketServer("localhost", 1234)
