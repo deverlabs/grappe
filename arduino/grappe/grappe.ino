@@ -12,11 +12,7 @@ void setup() {
     serialSetup();
     displaysSetup();
 
-    setLabel(0, F("Grappe"));
-    setLabel(1, F("Loading"));
-    delay(1000);
-    setLabel(1, F(""));
-    setLabel(0, F(""));
+    displaysPrintSplash();
 
     serialSendReadyEvent();
 
@@ -26,12 +22,13 @@ void setup() {
     componentPlug(T_COMP_POTENTIOMETER, 2);
     componentPlug(T_COMP_POTENTIOMETER, 3);
     componentPlug(T_COMP_JOYSTICK, 4);
-    //componentPlug(T_COMP_PIR, 5);
+    componentPlug(T_COMP_PIR, 5);
+
+    delay(2000);
+    printLayout();
 }
 
 void loop() {
-  //serialSendData();
-
   /** Event Received from PC **/
   if (eventReceived) {
     processEventReceived();
@@ -50,7 +47,8 @@ void loop() {
     }
   }
   warmedUp = true;
-  delay(100);
+  
+  delay(80);
 }
 
 String getValue(String data, char separator, int index)

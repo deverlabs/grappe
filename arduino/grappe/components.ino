@@ -97,6 +97,7 @@ bool componentPollValues(uint8_t slot) {
     {
       int16_t cur_Y = analogRead(pgm_read_byte(&SLOTS_PINS[slot][1])) - JOYSTICK_CENTER;
       int16_t cur_X = analogRead(pgm_read_byte(&SLOTS_PINS[slot][2])) - JOYSTICK_CENTER;
+
       if(cur_X > JOYSTICK_THRESHOLD) {
         values[slot] = 0;
         hasChanged = true;
@@ -106,6 +107,7 @@ bool componentPollValues(uint8_t slot) {
       } else if(cur_Y > JOYSTICK_THRESHOLD) {
         values[slot] = 3;
         hasChanged = true;
+        //delay(1030 - map(abs(cur_Y), 0, JOYSTICK_CENTER, 30, 1000));
       } else if(cur_Y < -JOYSTICK_THRESHOLD) {
         values[slot] = 2;
         hasChanged = true;
@@ -118,7 +120,7 @@ bool componentPollValues(uint8_t slot) {
     {
       old = values[slot];
       values[slot] = digitalRead(pgm_read_byte(&SLOTS_PINS[slot][0]));
-      if(values[slot] != old) { hasChanged = true; }
+      if(values[slot] != old && values[slot] == 1) { hasChanged = true; }
       break;
     }
 
