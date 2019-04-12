@@ -15,8 +15,10 @@ import tornado.options
 import tornado.web
 import tornado.web
 import tornado.websocket
-from pyautogui import press, typewrite, hotkey, keyDown, keyUp, scoll
+import pyautogui
 from jskey import keyCodes
+
+pyautogui.PAUSE = 0
 
 serialPort = None
 INITIALIZED = False
@@ -44,15 +46,15 @@ def writeToClient(message):
 class VirtualKey():
 
     def Write(self, text):
-        typewrite(text)
+        pyautogui.typewrite(text)
 
     def Process(self, command):
         return os.popen(command)
     def mouseAction(self, action_type):
         if action_type == "scrollUp":
-            return scroll(10)
+            return pyautogui.scroll(10)
         elif action_type == "scrollDown":
-            return scroll(-10)
+            return pyautogui.scroll(-10)
         else:
             return
 
@@ -62,20 +64,20 @@ class VirtualKey():
                 if int(Pos)==int(char[:1]):
                     if all(c in 'xX' + string.hexdigits for c in char[2:]):
                         print("Hexa code: ", char[2:], "Converted: ",keyCodes[int(char[2:], 0)] )
-                        keyDown(keyCodes[int(char[2:], 0)])
+                        pyautogui.keyDown(keyCodes[int(char[2:], 0)])
                     else:
                         self.mouseAction(char[2:])
             if all(c in 'xX' + string.hexdigits for c in char):
                 print(keyCodes[int(char, 0)])
-                keyDown(keyCodes[int(char, 0)])
+                pyautogui.keyDown(keyCodes[int(char, 0)])
 
         for char in reversed(suit):
             if ':' in char:
                 if int(Pos)==int(char[:1]):
                     if all(c in 'xX' + string.hexdigits for c in char):
-                        keyUp(keyCodes[int(char, 0)])
+                        pyautogui.keyUp(keyCodes[int(char, 0)])
             if all(c in 'xX' + string.hexdigits for c in char):
-                keyUp(keyCodes[int(char, 0)])
+                pyautogui.keyUp(keyCodes[int(char, 0)])
 
 
 

@@ -132,7 +132,7 @@ keyCodes = {
     170: '*',
     171: '~ + * key',
     172: 'home key',
-    173: 'minus (firefox), mute/unmute',
+    173: 'volumemute',
     174: 'decrease volume level',
     175: 'increase volume level',
     176: 'next',
