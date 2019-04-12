@@ -52,9 +52,9 @@ class VirtualKey():
         return os.popen(command)
     def mouseAction(self, action_type):
         if action_type == "scrollUp":
-            return pyautogui.scroll(10)
+            return pyautogui.scroll(30)
         elif action_type == "scrollDown":
-            return pyautogui.scroll(-10)
+            return pyautogui.scroll(-30)
         else:
             return
 
