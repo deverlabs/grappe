@@ -4,9 +4,10 @@
 
 import React, { Component } from 'react';
 import cn from 'classnames';
-import { Card } from 'react-bootstrap';
+import { Card, Button } from 'react-bootstrap';
 import { Box } from 'grommet';
-import { FormClose } from 'grommet-icons';
+import { FormClose, ChapterAdd } from 'grommet-icons';
+import PresetEditor from './PresetEditor';
 import styles from './styles.scss';
 import presets from './presets';
 
@@ -19,8 +20,25 @@ type Props = {
 };
 
 export class Editor extends Component<Props> {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      presetEditorOpen: false
+    }
+
+    this.togglePresetEditor = this.togglePresetEditor.bind(this);
+  }
+
+  togglePresetEditor() {
+    this.setState({
+      presetEditorOpen: !this.state.presetEditorOpen
+    });
+  };
+
   render() {
     const { show, moduleid, modules, onPresetSelect, onExit } = this.props;
+    const { presetEditorOpen } = this.state;
 
     if(!show) return null;
 
@@ -32,6 +50,9 @@ export class Editor extends Component<Props> {
         <div className={styles.inline}>
           <h4> Modification du module: {modules[moduleid].title}</h4>
           <FormClose className={styles.close} color='plain' size='32px' onClick={()=> onExit()} />
+        </div>
+        <div>
+          <Button onClick={() => console.log(ok)} variant="outline-secondary"><ChapterAdd color='plain' size='14px' /></Button>
         </div>
         <Box className={styles.editor} pad="small">
           <div style={{ display: 'flex', flexDirection: 'horizontal', flexWrap: 'wrap', justifyContent: 'left' }}>
@@ -51,8 +72,23 @@ export class Editor extends Component<Props> {
                 </Card>
               </Box>
             ))}
+
+            <Box animation={{
+              'type': 'zoomIn',
+              'duration': 200,
+              'size': 'xlarge',
+            }}>
+              <Card style={{ minHeight: '160px', width: '13rem', margin: '10px', backgroundColor: '#fafafa' }} className={styles.card} onClick={this.togglePresetEditor}>
+                <Card.Body>
+                  {/**<Card.Title className={styles.cardTitle}>Nouveau</Card.Title>**/}
+                  <Card.Text style={{textAlign: 'center'}}><ChapterAdd color='plain' size='50px' /></Card.Text>
+                </Card.Body>
+              </Card>
+            </Box>
           </div>
         </Box>
+
+        <PresetEditor show={presetEditorOpen} handleClose={this.togglePresetEditor}/>
       </Box>
 
     );
