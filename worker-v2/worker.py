@@ -6,7 +6,6 @@ import sys
 import time
 from threading import Thread
 import unidecode
-import mouse
 import serial
 import serial.tools.list_ports
 import tornado.httpserver
@@ -16,7 +15,7 @@ import tornado.options
 import tornado.web
 import tornado.web
 import tornado.websocket
-from pyautogui import press, typewrite, hotkey, keyDown, keyUp
+from pyautogui import press, typewrite, hotkey, keyDown, keyUp, scoll
 from jskey import keyCodes
 
 serialPort = None
@@ -51,9 +50,9 @@ class VirtualKey():
         return os.popen(command)
     def mouseAction(self, action_type):
         if action_type == "scrollUp":
-            return mouse.wheel(1)
+            return scroll(10)
         elif action_type == "scrollDown":
-            return mouse.wheel(-1)
+            return scroll(-10)
         else:
             return
 
