@@ -1,6 +1,6 @@
 # Makefile sourced from https://gist.github.com/mpneuried/0594963ad38e68917ef189b4e6a269db
 
-APP_NAME="$(shell basename $(PWD))"
+APP_NAME=$(shell basename $(PWD))
 
 PORTS="3000:3000"
 APP_VOLUME="$(shell pwd):/app"
@@ -14,7 +14,7 @@ help: ## This help.
 
 .DEFAULT_GOAL := help
 
-DOCKER_RUN_CMD=docker run -i -t --rm --name=$(APP_NAME) -p=$(PORTS) -v=$(APP_VOLUME) -v="node_modules:/app/node_modules" $(APP_NAME)
+DOCKER_RUN_CMD=docker run -i -t --rm --name="$(APP_NAME)" -p=$(PORTS) -v=$(APP_VOLUME) -v="$(APP_NAME)_node_modules:/app/node_modules" "$(APP_NAME)"
 
 install: ## Prepare development environment
 	@echo "☕ > You can grab a coffee, it will take some time ..."
