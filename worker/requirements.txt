@@ -1,5 +1,5 @@
-tornado==6.0.2
-pyautogui==0.9.42
-pyserial==3.4
+pynput==1.4.2
+PyAutoGUI==0.9.42
 Unidecode==1.0.23
-pynput
+tornado==6.0.2
+pyserial==3.4
