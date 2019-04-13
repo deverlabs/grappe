@@ -47,7 +47,7 @@ class Socket extends Component <Props>{
     };
     socketa.onmessage = function (evt) {
       handleChange(evt);
-      onMessage(JSON.parse(JSON.parse(evt.data)));
+      onMessage(JSON.parse(evt.data));
     };
     socketa.onclose = function(evt) {
       handleChange(evt);

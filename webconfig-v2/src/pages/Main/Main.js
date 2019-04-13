@@ -34,6 +34,7 @@ export class Main extends Component<Props> {
     this.editComponent = this.editComponent.bind(this);
     this.exitEditingMode = this.exitEditingMode.bind(this);
     this.saveEditingMode = this.saveEditingMode.bind(this);
+    this.sessionRecord = this.sessionRecord.bind(this);
     this.toggleSandbox = this.toggleSandbox.bind(this);
     this.lastMoved = new Date();
   }
@@ -91,22 +92,37 @@ export class Main extends Component<Props> {
 
   handleMessage(data) {
     const { lastMoved } = this;
+    const { editingModuleID } = this.state;
 
     if(data?.event === 'connected') {
       this.setState({ welcome: data.message });
     } else if(data?.event === 'ping') {
       this.setState({ hardware: data.message });
-    } else if(data?.event === 'moved') {
+    }
+    else if(data?.event === 'session') {
+      const obj = {
+        buttonName : 'Session',
+        description: 'blabalba',
+        keys : [
+          { type: 'session', commands: data.actions }
+        ]
+      };
+
+      this.onPresetSelect(obj);
+    }
+    else if(data?.event === 'moved') {
       this.lastMoved = new Date();
       this.setState({ moved: data.message });
       const da= new Date();
+
       setTimeout(()=> {
 
         const diff = (da.getTime() - lastMoved.getTime());
+
         this.setState({ moved: null });
         console.log(diff);
         if(diff > 1500){
-
+          console.log('reset');
         }
 
       }, 1000);
@@ -114,10 +130,16 @@ export class Main extends Component<Props> {
 
   }
 
+  sessionRecord(id) {
+    console.log(id);
+    this.sendToModule({ session : 'start' });
+  }
+
+
   toggleSandbox() {
-    this.setState({
-      debugMode: !this.state.debugMode
-    });
+    this.setState(prevState => ({
+      debugMode: !prevState.debugMode
+    }));
   }
 
   renderSandbox() {
@@ -161,7 +183,9 @@ export class Main extends Component<Props> {
       <Socket onMessage={(m) => this.handleMessage(m)} onSocketChange={(e) => this.socketChanged(e)}>
         <div style={{ height: '75px', display: 'flex', justifyContent: 'space-between' }} className={styles.headerLogo}>
           <div style={{ width: '131px' }}></div>
-          <img role="button" onClick={this.toggleSandbox} alt="grappe logo" src="images/logo.png" />
+          <div onClick={this.toggleSandbox} role="button">
+            <img alt="grappe logo" src="images/logo.png" />
+          </div>
           <Button size="sm" variant="outline-secondary">Contrôle à distance</Button>
         </div>
 
@@ -216,6 +240,7 @@ export class Main extends Component<Props> {
               moduleid={editingModuleID}
               onExit={this.exitEditingMode}
               onSave={this.saveEditingMode}
+              runSessionRecording={(e) => this.sessionRecord(e)}
               show={editingModuleID !== null}
               onPresetSelect={this.onPresetSelect}
             />

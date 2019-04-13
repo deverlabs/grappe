@@ -6,7 +6,7 @@ import React, { Component } from 'react';
 import cn from 'classnames';
 import { Card, Button } from 'react-bootstrap';
 import { Box } from 'grommet';
-import { FormClose, ChapterAdd } from 'grommet-icons';
+import { FormClose, ChapterAdd, Cli } from 'grommet-icons';
 import PresetEditor from './PresetEditor';
 import styles from './styles.scss';
 import presets from './presets';
@@ -16,7 +16,8 @@ type Props = {
     moduleid: Number,
     onExit: Function,
     onPresetSelect: Function,
-    show: Boolean
+    show: Boolean,
+    runSessionRecording: Function
 };
 
 export class Editor extends Component<Props> {
@@ -25,20 +26,21 @@ export class Editor extends Component<Props> {
 
     this.state = {
       presetEditorOpen: false
-    }
+    };
 
     this.togglePresetEditor = this.togglePresetEditor.bind(this);
   }
 
   togglePresetEditor() {
-    this.setState({
-      presetEditorOpen: !this.state.presetEditorOpen
-    });
+    this.setState(prevState => ({
+      presetEditorOpen: !prevState.presetEditorOpen
+    }));
   };
 
   render() {
-    const { show, moduleid, modules, onPresetSelect, onExit } = this.props;
+    const { show, moduleid, modules, onPresetSelect, onExit, runSessionRecording } = this.props;
     const { presetEditorOpen } = this.state;
+
 
     if(!show) return null;
 
@@ -52,7 +54,11 @@ export class Editor extends Component<Props> {
           <FormClose className={styles.close} color='plain' size='32px' onClick={()=> onExit()} />
         </div>
         <div>
-          <Button onClick={() => console.log(ok)} variant="outline-secondary"><ChapterAdd color='plain' size='14px' /></Button>
+          <Button onClick={() => console.log('')} variant="outline-secondary"><ChapterAdd color='plain' size='14px' /></Button>
+        </div>
+        <div>
+          <Button onClick={() => runSessionRecording(moduleid)} variant="outline-secondary"><Cli color='plain' size='14px' /></Button>
+          <p>Press escape when session record finished</p>
         </div>
         <Box className={styles.editor} pad="small">
           <div style={{ display: 'flex', flexDirection: 'horizontal', flexWrap: 'wrap', justifyContent: 'left' }}>
@@ -80,8 +86,8 @@ export class Editor extends Component<Props> {
             }}>
               <Card style={{ minHeight: '160px', width: '13rem', margin: '10px', backgroundColor: '#fafafa' }} className={styles.card} onClick={this.togglePresetEditor}>
                 <Card.Body>
-                  {/**<Card.Title className={styles.cardTitle}>Nouveau</Card.Title>**/}
-                  <Card.Text style={{textAlign: 'center'}}><ChapterAdd color='plain' size='50px' /></Card.Text>
+                  {/** <Card.Title className={styles.cardTitle}>Nouveau</Card.Title>* */}
+                  <Card.Text style={{ textAlign: 'center' }}><ChapterAdd color='plain' size='50px' /></Card.Text>
                 </Card.Body>
               </Card>
             </Box>

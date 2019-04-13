@@ -7,6 +7,7 @@ import time
 from threading import Thread
 import unidecode
 import serial
+import datetime
 import serial.tools.list_ports
 import tornado.httpserver
 from tornado.platform.asyncio import AnyThreadEventLoopPolicy
@@ -17,6 +18,7 @@ import tornado.web
 import tornado.websocket
 import pyautogui
 from jskey import keyCodes
+from pynput import keyboard, mouse
 
 pyautogui.PAUSE = 0
 
@@ -26,6 +28,47 @@ CLIENT_CONNECTED = False
 CLIENT = None
 PING_SENDED = False
 Grappe = None
+
+Recording = False
+Events = []
+doubleClickChecker = None
+lastClickedTime = 0
+
+def on_press(key):
+    global Events
+    if key == keyboard.Key.esc:
+        Recording = False
+        writeToClient(json.dumps({"event": "session", "actions": Events}))
+        Events = []
+        print("Stop recording")
+    return True
+
+
+def on_click(x, y, button, pressed):
+    if pressed:
+        global Events,doubleClickChecker,lastClickedTime, Recording
+
+        if lastClickedTime is not 0:
+            deltaLastClicked = datetime.datetime.now() - lastClickedTime
+        else:
+            deltaLastClicked = datetime.datetime.now() - datetime.datetime.now()
+
+        if Recording is True:
+            if doubleClickChecker is not None:
+                deltaDoubleClick = datetime.datetime.now() - doubleClickChecker
+                print(int(deltaDoubleClick.total_seconds() * 1000))
+                if int(deltaDoubleClick.total_seconds() * 1000 < 300):
+                    print("Double click")
+                    Events.pop()
+                    Events.append(({"type": "double", "x": x, "y": y, "wait": int(deltaLastClicked.total_seconds() * 1000)}))
+                    doubleClickChecker = None
+                    lastClickedTime = datetime.datetime.now()
+                    return True
+
+            print("Simple click")
+            Events.append(({"type": "simple", "x": x, "y": y, "wait": int(deltaLastClicked.total_seconds() * 1000)}))
+            lastClickedTime = datetime.datetime.now()
+            doubleClickChecker = datetime.datetime.now()
 
 
 def resetVars():
@@ -57,6 +100,15 @@ class VirtualKey():
             return pyautogui.scroll(-30)
         else:
             return
+
+    def runAutoGui(self, commands):
+        global Events
+        for action in commands:
+            time.sleep(int(action['wait'])/1000)
+            if action["type"] == "simple":
+                pyautogui.click(x=action['x'], y=action['y'])
+            elif action["type"] == "double":
+                pyautogui.doubleClick(x=action['x'], y=action['y'])
 
     def Hotkey(self, suit, Pos):
         for char in suit:
@@ -90,17 +142,22 @@ class WSHandler(tornado.websocket.WebSocketHandler):
         CLIENT_CONNECTED = True
         CLIENT = self
         print('new connection')
-        self.write_message(json.dumps('{"event": "connected", "message" : "Connected to Grappe v0.9"}'))
-        self.write_message(json.dumps('{"event": "config", "message" : '+json.dumps(Grappe.getComponents())+'}'))
+        self.write_message(json.dumps({"event": "connected", "message" : "Connected to Grappe v0.9"}))
+        self.write_message(json.dumps({"event": "config", "message" : '+json.dumps(Grappe.getComponents())+'}))
         if INITIALIZED:
-            self.write_message(json.dumps('{"event": "ping", "message" : 1}'))
+            self.write_message(json.dumps({"event": "ping", "message" : 1}))
 
     def on_message(self, message):
+        global Recording
         res = json.loads(message)
         print(message)
         if 'test' in res['object']:
             event = res['object']['test']
             Grappe.runComponent(int(event[2]), (int(event[4])))
+            return
+        if 'session' in res['object']:
+            print('start record')
+            Recording = True
             return
         if int(res['object']['id']) < 4:
            Grappe.printSerial('1:'+res['object']['id']+':'+unidecode.unidecode(res['object']['content']['buttonName'])[:14].upper())
@@ -163,6 +220,8 @@ class Manager(Thread):
                             Keyboard.Write(object["text"])
                         elif object["type"] == "process":
                             Keyboard.Process(object["command"])
+                        elif object["type"] == "session":
+                            Keyboard.runAutoGui(object["commands"])
                         if "sleep" in object:
                             print("sleep")
                             time.sleep(int(object["sleep"])/1000)
@@ -174,9 +233,10 @@ class Manager(Thread):
             print(content)
             if content[0] is not "0" and content[1] is not "ready-event":
                 if Grappe.getComponent(int(content[1])) is not 0:
+                    writeToClient(json.dumps({"event": "moved", "message" : int(content[1])}))
                     return Grappe.runComponent(int(content[1]), int(content[2]))
                 else:
-                    writeToClient(json.dumps('{"event": "moved", "message" : '+str(content[1])+'}'))
+                    writeToClient(json.dumps({"event": "moved", "message" : int(content[1])}))
 
 
 
@@ -206,14 +266,14 @@ class Manager(Thread):
                     if not INITIALIZED:
                         print("Init Grappe")
                         INITIALIZED = True
-                        writeToClient(json.dumps('{"event": "ping", "message" : 1}'))
+                        writeToClient(json.dumps({"event": "ping", "message" : 1}))
                     Grappe.handleIncoming(serialString.decode("utf-8"))
         except:
             INITIALIZED = False
             if PING_SENDED is not True:
                 if CLIENT is not None:
                     PING_SENDED = True
-                writeToClient(json.dumps('{"event": "ping", "message" : 0}'))
+                writeToClient(json.dumps({"event": "ping", "message" : 0}))
             return self.run(True)
 
 
@@ -224,6 +284,12 @@ if __name__ == "__main__":
         Grappe.start()
         Socket = SocketServer("localhost", 1234)
         Socket.start()
+        listener = keyboard.Listener(
+            on_press=on_press)
+        listener.start()
+        mouseListener = mouse.Listener(
+            on_click=on_click)
+        mouseListener.start()
 
     except KeyboardInterrupt:
         print('Interrupted')
