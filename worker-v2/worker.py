@@ -1,24 +1,24 @@
 import asyncio
+import datetime
 import json
 import os
+import pyautogui
+import serial
+import serial.tools.list_ports
 import string
 import sys
 import time
-from threading import Thread
-import unidecode
-import serial
-import datetime
-import serial.tools.list_ports
 import tornado.httpserver
-from tornado.platform.asyncio import AnyThreadEventLoopPolicy
 import tornado.ioloop
 import tornado.options
 import tornado.web
-import tornado.web
 import tornado.websocket
-import pyautogui
-from jskey import keyCodes
+import unidecode
 from pynput import keyboard, mouse
+from threading import Thread
+from tornado.platform.asyncio import AnyThreadEventLoopPolicy
+
+from universalVK import keyCodes
 
 pyautogui.PAUSE = 0
 
@@ -34,19 +34,20 @@ Events = []
 doubleClickChecker = None
 lastClickedTime = 0
 
-def on_press(key):
-    global Events
+
+def handle_key_press(key):
+    global Events, Recording
     if key == keyboard.Key.esc:
         Recording = False
-        writeToClient(json.dumps({"event": "session", "actions": Events}))
+        writeToClient({"event": "session", "actions": Events})
         Events = []
         print("Stop recording")
     return True
 
 
-def on_click(x, y, button, pressed):
+def handle_mouse_click(x, y, button, pressed):
     if pressed:
-        global Events,doubleClickChecker,lastClickedTime, Recording
+        global Events, doubleClickChecker, lastClickedTime, Recording
 
         if lastClickedTime is not 0:
             deltaLastClicked = datetime.datetime.now() - lastClickedTime
@@ -56,19 +57,18 @@ def on_click(x, y, button, pressed):
         if Recording is True:
             if doubleClickChecker is not None:
                 deltaDoubleClick = datetime.datetime.now() - doubleClickChecker
-                print(int(deltaDoubleClick.total_seconds() * 1000))
                 if int(deltaDoubleClick.total_seconds() * 1000 < 300):
-                    print("Double click")
                     Events.pop()
-                    Events.append(({"type": "double", "x": x, "y": y, "wait": int(deltaLastClicked.total_seconds() * 1000)}))
+                    Events.append(
+                        ({"type": "double", "x": x, "y": y, "wait": int(deltaLastClicked.total_seconds() * 1000)}))
                     doubleClickChecker = None
                     lastClickedTime = datetime.datetime.now()
                     return True
 
-            print("Simple click")
             Events.append(({"type": "simple", "x": x, "y": y, "wait": int(deltaLastClicked.total_seconds() * 1000)}))
             lastClickedTime = datetime.datetime.now()
             doubleClickChecker = datetime.datetime.now()
+    return True
 
 
 def resetVars():
@@ -77,34 +77,38 @@ def resetVars():
     CLIENT = None
     CLIENT_CONNECTED = False
 
-def writeToClient(message):
+
+def resetAutoGui():
+    global Events, lastClickedTime, doubleClickChecker
+    doubleClickChecker = None
+    lastClickedTime = 0
+    Events = []
+
+
+def writeToClient(object):
     global CLIENT
     if CLIENT is not None:
-        print("Write to client")
-        CLIENT.write_message(message)
+        CLIENT.write_message(json.dumps(object))
 
 
-
-
-class VirtualKey():
+class VirtualActions():
 
     def Write(self, text):
         pyautogui.typewrite(text)
 
     def Process(self, command):
         return os.popen(command)
+
     def mouseAction(self, action_type):
         if action_type == "scrollUp":
             return pyautogui.scroll(30)
         elif action_type == "scrollDown":
             return pyautogui.scroll(-30)
-        else:
-            return
 
     def runAutoGui(self, commands):
         global Events
         for action in commands:
-            time.sleep(int(action['wait'])/1000)
+            time.sleep(int(action['wait']) / 1000)
             if action["type"] == "simple":
                 pyautogui.click(x=action['x'], y=action['y'])
             elif action["type"] == "double":
@@ -113,9 +117,9 @@ class VirtualKey():
     def Hotkey(self, suit, Pos):
         for char in suit:
             if ':' in char:
-                if int(Pos)==int(char[:1]):
+                if int(Pos) == int(char[:1]):
                     if all(c in 'xX' + string.hexdigits for c in char[2:]):
-                        print("Hexa code: ", char[2:], "Converted: ",keyCodes[int(char[2:], 0)] )
+                        print("Hexa code: ", char[2:], "Converted: ", keyCodes[int(char[2:], 0)])
                         pyautogui.keyDown(keyCodes[int(char[2:], 0)])
                     else:
                         self.mouseAction(char[2:])
@@ -125,12 +129,11 @@ class VirtualKey():
 
         for char in reversed(suit):
             if ':' in char:
-                if int(Pos)==int(char[:1]):
+                if int(Pos) == int(char[:1]):
                     if all(c in 'xX' + string.hexdigits for c in char):
                         pyautogui.keyUp(keyCodes[int(char, 0)])
             if all(c in 'xX' + string.hexdigits for c in char):
                 pyautogui.keyUp(keyCodes[int(char, 0)])
-
 
 
 class WSHandler(tornado.websocket.WebSocketHandler):
@@ -142,10 +145,10 @@ class WSHandler(tornado.websocket.WebSocketHandler):
         CLIENT_CONNECTED = True
         CLIENT = self
         print('new connection')
-        self.write_message(json.dumps({"event": "connected", "message" : "Connected to Grappe v0.9"}))
-        self.write_message(json.dumps({"event": "config", "message" : '+json.dumps(Grappe.getComponents())+'}))
+        writeToClient({"event": "connected", "message": "Connected to Grappe v0.9"})
+        writeToClient({"event": "config", "message": json.dumps(Grappe.getComponents())})
         if INITIALIZED:
-            self.write_message(json.dumps({"event": "ping", "message" : 1}))
+            writeToClient({"event": "ping", "message": 1})
 
     def on_message(self, message):
         global Recording
@@ -157,12 +160,14 @@ class WSHandler(tornado.websocket.WebSocketHandler):
             return
         if 'session' in res['object']:
             print('start record')
+            resetAutoGui()
             Recording = True
             return
+        compid = int(res['object']['id'])
+        content = res['object']['content']
         if int(res['object']['id']) < 4:
-           Grappe.printSerial('1:'+res['object']['id']+':'+unidecode.unidecode(res['object']['content']['buttonName'])[:14].upper())
-        Grappe.updateComponent(int(res['object']['id']), res['object']['content'])
-
+            Grappe.printOnScreen(compid, unidecode.unidecode(content['buttonName'])[:14].upper())
+        Grappe.updateComponent(compid, content)
 
     def on_close(self):
         global CLIENT_CONNECTED, CLIENT
@@ -195,18 +200,17 @@ class Manager(Thread):
         self.pad = [0] * 6
         Thread.__init__(self)
 
-
     def updateComponent(self, id, content):
         self.pad[id] = content
 
     def getComponent(self, id):
         return self.pad[id]
+
     def getComponents(self):
         return self.pad
 
     def runComponent(self, id, pos=None):
-        Keyboard = VirtualKey()
-        print("run")
+        vAction = VirtualActions()
         for key, config in dict.items((Grappe.getComponent(id))):
             if key == "buttonName":
                 print("Component triggered: ", config)
@@ -215,38 +219,37 @@ class Manager(Thread):
                     for object in config:
                         print(object)
                         if object["type"] == "suit":
-                            Keyboard.Hotkey(object["keys"], pos)
+                            vAction.Hotkey(object["keys"], pos)
                         elif object["type"] == "text":
-                            Keyboard.Write(object["text"])
+                            vAction.Write(object["text"])
                         elif object["type"] == "process":
-                            Keyboard.Process(object["command"])
+                            vAction.Process(object["command"])
                         elif object["type"] == "session":
-                            Keyboard.runAutoGui(object["commands"])
+                            vAction.runAutoGui(object["commands"])
                         if "sleep" in object:
                             print("sleep")
-                            time.sleep(int(object["sleep"])/1000)
-
+                            time.sleep(int(object["sleep"]) / 1000)
 
     def handleIncoming(self, data):
         try:
             content = data.rstrip("\r\n").split(":")
             print(content)
             if content[0] is not "0" and content[1] is not "ready-event":
-                if Grappe.getComponent(int(content[1])) is not 0:
-                    writeToClient(json.dumps({"event": "moved", "message" : int(content[1])}))
-                    return Grappe.runComponent(int(content[1]), int(content[2]))
-                else:
-                    writeToClient(json.dumps({"event": "moved", "message" : int(content[1])}))
-
+                triggeredID = int(content[1])
+                triggeredValue = int(content[2])
+                writeToClient({"event": "moved", "message": triggeredID})
+                if Grappe.getComponent(triggeredID) is not 0:
+                    Grappe.runComponent(triggeredID, triggeredValue)
 
 
         except Exception as e:
             print(str(e))
 
-
-
     def printSerial(self, message):
-        return serialPort.write(str.encode(str(message) + "\n"))
+        return serialPort.write((str(message) + "\n").encode())
+
+    def printOnScreen(self, id, message):
+        return self.printSerial('1:' + str(id) + ':' + message)
 
     def run(self, err=False):
         global INITIALIZED, serialPort, PING_SENDED
@@ -255,7 +258,7 @@ class Manager(Thread):
         try:
             selected_port = None
             for port in serial.tools.list_ports.comports():
-                selected_port=port.device
+                selected_port = port.device
             serialPort = serial.Serial(port=selected_port, baudrate=115200, bytesize=8, timeout=2,
                                        stopbits=serial.STOPBITS_ONE)
 
@@ -266,14 +269,14 @@ class Manager(Thread):
                     if not INITIALIZED:
                         print("Init Grappe")
                         INITIALIZED = True
-                        writeToClient(json.dumps({"event": "ping", "message" : 1}))
+                        writeToClient({"event": "ping", "message": 1})
                     Grappe.handleIncoming(serialString.decode("utf-8"))
         except:
             INITIALIZED = False
             if PING_SENDED is not True:
                 if CLIENT is not None:
                     PING_SENDED = True
-                writeToClient(json.dumps({"event": "ping", "message" : 0}))
+                writeToClient({"event": "ping", "message": 0})
             return self.run(True)
 
 
@@ -285,10 +288,10 @@ if __name__ == "__main__":
         Socket = SocketServer("localhost", 1234)
         Socket.start()
         listener = keyboard.Listener(
-            on_press=on_press)
+            on_press=handle_key_press)
         listener.start()
         mouseListener = mouse.Listener(
-            on_click=on_click)
+            on_click=handle_mouse_click)
         mouseListener.start()
 
     except KeyboardInterrupt:
