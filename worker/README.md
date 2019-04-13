@@ -1,1 +1,0 @@
-# Grappe C++ Worker

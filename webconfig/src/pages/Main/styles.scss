@@ -1,0 +1,71 @@
+@import '../../theme/variables';
+
+.headerLogo {
+  background-color: $color-dark-gray;
+  text-align: center;
+  padding: 15px;
+  margin-bottom: 50px;
+    img {
+        width: 180px;
+    }
+}
+
+.pad-core > div {
+    background-color: #333;
+    border-radius: 10px;
+    border: 0.1rem solid whitesmoke;
+}
+
+.pad-core .pad-center {
+    height: 300px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+@-webkit-keyframes glow {
+    0%, 100% {
+        -webkit-filter: drop-shadow(0 0 0px #fff)
+    }
+    50% {
+        -webkit-filter: drop-shadow(0 0 20px #fff)
+    }
+}
+
+
+.pad-core .pad-logo {
+    text-align: center;
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.pad-core .pad-logo img {
+    position: relative;
+    height: 70px;
+    width: auto;
+}
+
+.pad-core .pad-logo img.glow {
+    -webkit-animation: glow 2s infinite;
+}
+
+
+.pad-core .status {
+    color: white;
+    text-align: center;
+    bottom: 15px;
+    position: absolute;
+    left: 0;
+    width: 100%;
+    font-size: 12px;
+    font-style: italic;
+
+    .socket-status_searching {}
+
+    .socket-status_connected {
+      color: $green;
+    }
+    .socket-status_loosed {
+      color: $red;
+    }
+}
