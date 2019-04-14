@@ -127,7 +127,6 @@ export class Main extends Component<Props> {
 
       }, 1000);
     }
-
   }
 
   sessionRecord(id) {
@@ -215,7 +214,7 @@ export class Main extends Component<Props> {
                     <div className={ styles.status }>
                       {(socket?.readyState === 1) ? <span className={styles['socket-status_connected']}>{welcome}</span> : <span className={styles['socket-status_searching']}>Looking for a Grappe ...</span>}
                       <br />
-                      {(hardware === 1 && socket.readyState === 1) ? 'Grappe ready to use !' : 'Grappe not plugged-in'}
+                      {(hardware === 1 && socket.readyState === 1) ? 'Grappe ready to use !' : <span style={{ color : '#DB4C4C' }}>Grappe not plugged-in</span>}
                     </div>
                   </div>
                 </Col>

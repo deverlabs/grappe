@@ -21,6 +21,16 @@
   cursor: pointer;
 }
 .close {
-  margin-top: -8px;
+  margin-top: -3px;
   margin-left: auto;
+}
+
+.return {
+  margin-top: -3px;
+  margin-left: 0;
+  margin-right: 10px;
+}
+
+.return:hover {
+  cursor: pointer;
 }
