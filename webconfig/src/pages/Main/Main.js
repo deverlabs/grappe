@@ -131,8 +131,9 @@ export class Main extends Component<Props> {
   }
 
   sessionRecord(id) {
-    console.log(id);
-    this.sendToModule({ session : 'start' });
+    if(id === -1)
+      return this.sendToModule({ session : 'stop' });
+    return this.sendToModule({ session : 'start' });
   }
 
 

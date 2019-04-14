@@ -37,7 +37,7 @@ lastClickedTime = 0
 
 def handle_key_press(key):
     global Events, Recording
-    if key == keyboard.Key.esc:
+    if key == keyboard.Key.esc and Recording:
         Recording = False
         writeToClient({"event": "session", "actions": Events})
         Events = []
@@ -159,9 +159,14 @@ class WSHandler(tornado.websocket.WebSocketHandler):
             Grappe.runComponent(int(event[2]), (int(event[4])))
             return
         if 'session' in res['object']:
-            print('start record')
+            if res['object']['session'] == "start":
+                print('Start record')
+                resetAutoGui()
+                Recording = True
+                return
+            print('Stop record')
             resetAutoGui()
-            Recording = True
+            Recording = False
             return
         compid = int(res['object']['id'])
         content = res['object']['content']
@@ -246,7 +251,8 @@ class Manager(Thread):
             print(str(e))
 
     def printSerial(self, message):
-        return serialPort.write((str(message) + "\n").encode())
+        if INITIALIZED:
+            return serialPort.write((str(message) + "\n").encode())
 
     def printOnScreen(self, id, message):
         return self.printSerial('1:' + str(id) + ':' + message)
