@@ -1,11 +1,12 @@
 import asyncio
-import datetime
 import json
 import os
+import string
+from threading import Thread
+
 import pyautogui
 import serial
 import serial.tools.list_ports
-import string
 import sys
 import time
 import tornado.httpserver
@@ -15,14 +16,18 @@ import tornado.web
 import tornado.websocket
 import unidecode
 from pynput import keyboard, mouse
-from threading import Thread
+from pynput.keyboard import Controller
 from tornado.platform.asyncio import AnyThreadEventLoopPolicy
 
+from listeners import Listener
 from universalVK import keyCodes
+
+key = Controller()
 
 pyautogui.PAUSE = 0
 
 serialPort = None
+ctrlListener = None
 INITIALIZED = False
 CLIENT_CONNECTED = False
 CLIENT = None
@@ -33,42 +38,10 @@ Recording = False
 Events = []
 doubleClickChecker = None
 lastClickedTime = 0
-
-
-def handle_key_press(key):
-    global Events, Recording
-    if key == keyboard.Key.esc and Recording:
-        Recording = False
-        writeToClient({"event": "session", "actions": Events})
-        Events = []
-        print("Stop recording")
-    return True
-
-
-def handle_mouse_click(x, y, button, pressed):
-    if pressed:
-        global Events, doubleClickChecker, lastClickedTime, Recording
-
-        if lastClickedTime is not 0:
-            deltaLastClicked = datetime.datetime.now() - lastClickedTime
-        else:
-            deltaLastClicked = datetime.datetime.now() - datetime.datetime.now()
-
-        if Recording is True:
-            if doubleClickChecker is not None:
-                deltaDoubleClick = datetime.datetime.now() - doubleClickChecker
-                if int(deltaDoubleClick.total_seconds() * 1000 < 300):
-                    Events.pop()
-                    Events.append(
-                        ({"type": "double", "x": x, "y": y, "wait": int(deltaLastClicked.total_seconds() * 1000)}))
-                    doubleClickChecker = None
-                    lastClickedTime = datetime.datetime.now()
-                    return True
-
-            Events.append(({"type": "simple", "x": x, "y": y, "wait": int(deltaLastClicked.total_seconds() * 1000)}))
-            lastClickedTime = datetime.datetime.now()
-            doubleClickChecker = datetime.datetime.now()
-    return True
+lastSpecialKeyTime = 0
+lastKeyTime = 0
+handledString = ''
+lastAction = None
 
 
 def resetVars():
@@ -76,13 +49,6 @@ def resetVars():
     PING_SENDED = False
     CLIENT = None
     CLIENT_CONNECTED = False
-
-
-def resetAutoGui():
-    global Events, lastClickedTime, doubleClickChecker
-    doubleClickChecker = None
-    lastClickedTime = 0
-    Events = []
 
 
 def writeToClient(object):
@@ -94,7 +60,7 @@ def writeToClient(object):
 class VirtualActions():
 
     def Write(self, text):
-        pyautogui.typewrite(text)
+        key.type(text)
 
     def Process(self, command):
         return os.popen(command)
@@ -124,7 +90,7 @@ class VirtualActions():
                     else:
                         self.mouseAction(char[2:])
             if all(c in 'xX' + string.hexdigits for c in char):
-                print(keyCodes[int(char, 0)])
+                print("Hexa code: ", char, "Converted: ", keyCodes[int(char, 0)])
                 pyautogui.keyDown(keyCodes[int(char, 0)])
 
         for char in reversed(suit):
@@ -151,7 +117,7 @@ class WSHandler(tornado.websocket.WebSocketHandler):
             writeToClient({"event": "ping", "message": 1})
 
     def on_message(self, message):
-        global Recording
+        global ctrlListener
         res = json.loads(message)
         print(message)
         if 'test' in res['object']:
@@ -161,12 +127,12 @@ class WSHandler(tornado.websocket.WebSocketHandler):
         if 'session' in res['object']:
             if res['object']['session'] == "start":
                 print('Start record')
-                resetAutoGui()
-                Recording = True
+                ctrlListener.resetAutoGui()
+                ctrlListener.recording(True)
                 return
             print('Stop record')
-            resetAutoGui()
-            Recording = False
+            ctrlListener.resetAutoGui()
+            ctrlListener.recording(False)
             return
         compid = int(res['object']['id'])
         content = res['object']['content']
@@ -177,7 +143,7 @@ class WSHandler(tornado.websocket.WebSocketHandler):
     def on_close(self):
         global CLIENT_CONNECTED, CLIENT
         resetVars()
-        print ('connection closed')
+        print('connection closed')
 
 
 class SocketServer(Thread):
@@ -224,13 +190,18 @@ class Manager(Thread):
                     for object in config:
                         print(object)
                         if object["type"] == "suit":
+                            if "wait" in object:
+                                time.sleep(int(object["wait"]) / 1000)
                             vAction.Hotkey(object["keys"], pos)
                         elif object["type"] == "text":
+                            if "wait" in object:
+                                print("wait")
+                                time.sleep(int(object["wait"]) / 1000)
                             vAction.Write(object["text"])
                         elif object["type"] == "process":
                             vAction.Process(object["command"])
-                        elif object["type"] == "session":
-                            vAction.runAutoGui(object["commands"])
+                        elif object["type"] == "clicks":
+                            vAction.runAutoGui(object["actions"])
                         if "sleep" in object:
                             print("sleep")
                             time.sleep(int(object["sleep"]) / 1000)
@@ -293,11 +264,13 @@ if __name__ == "__main__":
         Grappe.start()
         Socket = SocketServer("localhost", 1234)
         Socket.start()
+        ctrlListener = Listener(writeToClient)
+        ctrlListener.start()
         listener = keyboard.Listener(
-            on_press=handle_key_press)
+            on_press=ctrlListener.handle_key_press)
         listener.start()
         mouseListener = mouse.Listener(
-            on_click=handle_mouse_click)
+            on_click=ctrlListener.handle_mouse_click)
         mouseListener.start()
 
     except KeyboardInterrupt:

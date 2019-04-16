@@ -21,6 +21,7 @@ export class Main extends Component<Props> {
       editingModuleID: null,
       sended: false,
       moved: null,
+      editing : [],
       modules: [
         { title: 'Interrupteurs', type: 'DSWITCH', uiType: 'btns', desc: 'Active ou désactive un paramètre.' },
         { title: 'Bouton poussoir', type: 'PUSHBTN', uiType: 'push-btn', desc: 'Déclenche une action.' },
@@ -55,6 +56,7 @@ export class Main extends Component<Props> {
 
     this.setState({
       editingModuleID: null,
+      editing: [],
       sended: true,
       modules
     });
@@ -100,15 +102,29 @@ export class Main extends Component<Props> {
       this.setState({ hardware: data.message });
     }
     else if(data?.event === 'session') {
-      const obj = {
-        buttonName : 'Session',
-        description: 'blabalba',
-        keys : [
-          { type: 'session', commands: data.actions }
-        ]
-      };
+      if(data?.done){
+        const { event, done, ...receivedEvent } = data;
 
-      this.onPresetSelect(obj);
+        if(Object.keys(receivedEvent).length !== 0) {
+          this.setState(prevState => ({
+            editing: [...prevState.editing, receivedEvent]
+          }));
+        }
+        const obj = {
+          buttonName : 'Session',
+          description: 'blabalba',
+          keys : this.state.editing
+
+        };
+
+        this.onPresetSelect(obj);
+        return true;
+      }
+      const { event, ...receivedEvent } = data;
+
+      this.setState(prevState => ({
+        editing: [...prevState.editing, receivedEvent]
+      }));
     }
     else if(data?.event === 'moved') {
       this.lastMoved = new Date();
@@ -127,6 +143,7 @@ export class Main extends Component<Props> {
 
       }, 1000);
     }
+    return true;
   }
 
   sessionRecord(id) {
