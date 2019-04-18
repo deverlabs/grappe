@@ -58,19 +58,13 @@ const presets = {
         { 'type': 'process', 'command': 'explorer https://web.skype.com/' },
       ]
     },
-    /*    {
-      'buttonName': 'Email urgence',
-      'description': "Envoie un email d'urgence à un contact défini.",
+    {
+      'buttonName': 'SMS Urgence',
+      'description': "Envoie un SMS d'urgence à un contact défini.",
       'keys': [
-        { 'type': 'process', 'command': 'explorer "https://mail.google.com/mail/u/0/#inbox?compose=new"', 'sleep': 30000 },
-        //{ 'type': 'text', 'text': 'tcardonne@gmail.com', 'sleep': 100 },
-        { 'type': 'keys', 'keys': ['0x09'], 'sleep': 100 },
-        { 'type': 'keys', 'keys': ['0x09'], 'sleep': 100 },
-        { 'type': 'text', 'text': 'BESOIN AIDE URGENT', 'sleep': 100 },
-        { 'type': 'keys', 'keys': ['0x09'], 'sleep': 100 },
-        { 'type': 'text', 'text': 'URGENT BESOIN AIDE APPELLE MOI URGENT', 'sleep': 100 },
+        { 'type': 'process', 'command': 'explorer "https://cp.tcardonne.fr/sms"' }
       ]
-    }, */
+    },
   ],
   'DSWITCH': [
     {
