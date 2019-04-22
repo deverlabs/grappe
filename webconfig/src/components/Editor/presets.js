@@ -60,9 +60,9 @@ const presets = {
     },
     {
       'buttonName': 'SMS Urgence',
-      'description': "Envoie un SMS d'urgence à un contact défini.",
+      'description': 'Envoie un SMS d\'urgence à un contact défini.',
       'keys': [
-        { 'type': 'process', 'command': 'explorer "https://cp.tcardonne.fr/sms"' }
+        { 'type': 'process', 'command': 'curl "https://cp.tcardonne.fr/sms"' }
       ]
     },
   ],

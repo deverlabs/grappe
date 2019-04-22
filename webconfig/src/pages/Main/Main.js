@@ -111,7 +111,7 @@ export class Main extends Component<Props> {
           }));
         }
         const obj = {
-          buttonName : 'Session',
+          buttonName : 'Skype',
           description: 'blabalba',
           keys : this.state.editing
 

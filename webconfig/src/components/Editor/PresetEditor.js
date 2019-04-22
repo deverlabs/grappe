@@ -10,13 +10,11 @@ import styles from './styles.scss';
 import presets from './presets';
 
 type Props = {
-    show: Boolean
+    show: Boolean,
+  handleClose: Function
 };
 
 export class PresetEditor extends Component<Props> {
-  constructor(props) {
-    super(props);
-  }
 
   render() {
     const { show, handleClose } = this.props;
@@ -28,24 +26,24 @@ export class PresetEditor extends Component<Props> {
         </Modal.Header>
         <Modal.Body>
           <Form>
-              <FormField name="name" label="Nom du réglage" />
+            <FormField name="name" label="Nom du réglage" />
 
-              <Menu
-                zIndex={32}
-                label="Nouveau"
-                items={[
-                  { label: 'Suite de touche', onClick: () => {} },
-                  { label: 'Ecrire du texte', onClick: () => {} },
-                  { label: 'Nouveau processus', onClick: () => {} },
-                ]}
-              />
+            <Menu
+              zIndex={32}
+              label="Nouveau"
+              items={[
+                { label: 'Suite de touche', onClick: () => {} },
+                { label: 'Ecrire du texte', onClick: () => {} },
+                { label: 'Nouveau processus', onClick: () => {} },
+              ]}
+            />
 
-              <h3>Actions :</h3>
-              <Box animation={{'type': 'zoomIn', 'duration': 200, 'size': 'xlarge'}}>
+            <h3>Actions :</h3>
+            <Box animation={{ 'type': 'zoomIn', 'duration': 200, 'size': 'xlarge' }}>
                 hello
-              </Box>
+            </Box>
 
-              <Button variant="outline-secondary" onClick={handleClose}>Annuler</Button>
+            <Button variant="outline-secondary" onClick={handleClose}>Annuler</Button>
           </Form>
         </Modal.Body>
         <Modal.Footer>

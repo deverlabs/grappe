@@ -67,9 +67,9 @@ class VirtualActions():
 
     def mouseAction(self, action_type):
         if action_type == "scrollUp":
-            return pyautogui.scroll(30)
+            return pyautogui.scroll(40)
         elif action_type == "scrollDown":
-            return pyautogui.scroll(-30)
+            return pyautogui.scroll(-40)
 
     def runAutoGui(self, commands):
         global Events

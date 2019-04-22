@@ -86,19 +86,6 @@ export class Editor extends Component<Props> {
                   {/** <Card.Img variant="top" src=" /> On peut mettre une image mais flemme * */} <Card.Body> <Card.Title
                     className={styles.cardTitle}>{e.buttonName}</Card.Title> <Card.Text>{e.description}</Card.Text> </Card.Body> </Card> </Box>
             ))}
-
-            <Box animation={{
-              'type': 'zoomIn',
-              'duration': 300,
-              'size': 'xlarge',
-            }}> <Card style={{ minHeight: '160px', width: '13rem', margin: '10px', backgroundColor: '#fafafa' }} className={styles.card}
-                onClick={this.togglePresetEditor}>    <Card.Body>
-                  <Box height="100%" width="100%" justify="center" align="center" alignContent="center" >
-                    <ChapterAdd color='plain' size='50px'/>
-                  </Box>
-                </Card.Body>
-              </Card> </Box>
-
             <Box animation={{
               'type': 'zoomIn',
               'duration': 300,
